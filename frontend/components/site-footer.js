@@ -15,17 +15,17 @@ export function SiteFooter() {
         <address className="not-italic">
           <p className="font-black text-foreground">Contact</p>
           <div className="mt-3 space-y-2">
-            <a className="block hover:text-foreground" href="tel:+213550000000">
-              +213 550 000 000
+            <a className="block hover:text-foreground" href="tel:+213557518525">
+              +213557518525
             </a>
-            <a className="block hover:text-foreground" href="mailto:contact@outillage-benyahia.com">
-              contact@outillage-benyahia.com
+            <a className="block hover:text-foreground" href="tel:+213549065852">
+              +213549065852
             </a>
             <a className="block hover:text-foreground" href="https://www.instagram.com/outillagebenyahia/" target="_blank" rel="noopener noreferrer">
               Instagram
             </a>
-            <a className="block hover:text-foreground" href="https://www.tiktok.com/@billelforreal" target="_blank" rel="noopener noreferrer">
-              TikTok
+            <a className="block hover:text-foreground" href="https://www.facebook.com/share/18z3iHjcyQ/" target="_blank" rel="noopener noreferrer">
+              Facebook
             </a>
           </div>
         </address>

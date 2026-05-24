@@ -11,6 +11,7 @@ const manrope = Manrope({
 export const metadata = {
   title: BRAND_NAME,
   description: "Premium e-commerce storefront and admin dashboard.",
+  viewport: "width=device-width, initial-scale=1",
   icons: {
     icon: "/favicon.ico",
     shortcut: "/favicon.ico",
@@ -24,8 +25,12 @@ export default function RootLayout({ children }) {
       lang="en"
       className={`${manrope.variable} h-full antialiased`}
     >
-      <body className="min-h-full">
-        <RootProviders>{children}</RootProviders>
+      <body className="min-h-screen overflow-x-hidden bg-white">
+        <RootProviders>
+          <div className="w-full overflow-x-hidden">
+            {children}
+          </div>
+        </RootProviders>
       </body>
     </html>
   );
