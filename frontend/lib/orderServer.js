@@ -15,6 +15,12 @@ function normalizeItems(items) {
   }));
 }
 
+function isValidDZPhone(phone) {
+  if (!phone) return false;
+  const cleaned = phone.toString().replace(/[\s\-\(\)]/g, "");
+  return /^(0|\+213|213)([567]\d{8}|[234]\d{7,8})$/.test(cleaned);
+}
+
 function assertNoPaymentData(payload) {
   const blockedKeys = ["card", "cvv", "cvc", "expiry", "payment_method", "paymentmethod"];
 
@@ -71,7 +77,11 @@ export async function createOrderRecord(payload) {
   const totalPrice = Number(payload.total_price ?? payload.totalPrice);
 
   if (!payload.user_name || !payload.user_phone || !payload.address) {
-    throw new Error("Name, email, phone, and address are required.");
+    throw new Error("Name, phone, and address are required.");
+  }
+
+  if (!isValidDZPhone(payload.user_phone)) {
+    throw new Error("Invalid Algerian phone number format. Please use a valid mobile (05, 06, 07) or landline number.");
   }
 
   if (!Number.isFinite(totalPrice) || totalPrice <= 0) {

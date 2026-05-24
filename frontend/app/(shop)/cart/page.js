@@ -20,6 +20,8 @@ const initialOrderForm = {
   description: "",
 };
 
+const DZ_PHONE_REGEX = /^(0|\+213|213)([567]\d{8}|[234]\d{7,8})$/;
+
 const deliveryLocations = ["Alger", "Blida", "Tipaza", "Boumerdes"];
 
 export default function CartPage() {
@@ -38,6 +40,12 @@ export default function CartPage() {
     event.preventDefault();
 
     if (items.length === 0) {
+      return;
+    }
+
+    const cleanedPhone = formValues.userPhone.replace(/[\s\-\(\)]/g, "");
+    if (!DZ_PHONE_REGEX.test(cleanedPhone)) {
+      setError("Please enter a valid Algerian phone number (e.g., 05XXXXXXXX).");
       return;
     }
 
@@ -161,6 +169,7 @@ export default function CartPage() {
             onChange={handleChange}
             placeholder="+213xxxxxxxx"
             required
+            error={error?.toLowerCase().includes("phone") ? error : null}
           />
           <FormField
             label="Address"

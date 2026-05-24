@@ -20,22 +20,39 @@ const getProductById = asyncHandler(async (req, res) => {
 });
 
 const createProduct = asyncHandler(async (req, res) => {
-  const product = await productService.createProduct(req.body);
+  const body = req.body || {};
+  const payload = {
+    ...body,
+    price: body.price !== undefined ? Number(body.price) : body.price,
+    stock: body.stock !== undefined ? parseInt(body.stock, 10) : body.stock,
+    imageUrl: req.file?.path || body?.imageUrl || null,
+  };
+
+  const product = await productService.createProduct(payload);
 
   res.status(201).json({
     success: true,
     message: "Product created successfully",
-    data: product
+    data: product,
   });
 });
 
 const updateProduct = asyncHandler(async (req, res) => {
-  const product = await productService.updateProduct(req.params.id, req.body);
+  const body = req.body || {};
+  const payload = {
+    ...body,
+    price: body.price !== undefined ? Number(body.price) : body.price,
+    stock: body.stock !== undefined ? parseInt(body.stock, 10) : body.stock,
+    // prefer uploaded file path when present
+    imageUrl: req.file?.path || body?.imageUrl || null,
+  };
+
+  const product = await productService.updateProduct(req.params.id, payload);
 
   res.status(200).json({
     success: true,
     message: "Product updated successfully",
-    data: product
+    data: product,
   });
 });
 

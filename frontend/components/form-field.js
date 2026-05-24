@@ -9,6 +9,7 @@ export function FormField({
   rows = 4,
   children,
   helpText,
+  error,
 }) {
   const commonProps = {
     id: name,
@@ -17,16 +18,19 @@ export function FormField({
     onChange,
     placeholder,
     required,
-    className: "input-base",
+    className: `input-base ${error ? "border-danger ring-danger/20" : ""}`,
   };
 
   return (
     <label className="space-y-2">
-      <span className="text-sm font-bold text-muted-strong">{label}</span>
+      <div className="flex justify-between items-center">
+        <span className="text-sm font-bold text-muted-strong">{label}</span>
+        {error ? <span className="text-xs font-semibold text-danger">{error}</span> : null}
+      </div>
       {type === "textarea" ? <textarea {...commonProps} rows={rows} /> : null}
       {type === "select" ? <select {...commonProps}>{children}</select> : null}
       {type !== "textarea" && type !== "select" ? <input {...commonProps} type={type} /> : null}
-      {helpText ? <span className="block text-xs text-muted">{helpText}</span> : null}
+      {helpText && !error ? <span className="block text-xs text-muted">{helpText}</span> : null}
     </label>
   );
 }

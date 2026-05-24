@@ -1,5 +1,6 @@
 const prisma = require("../lib/prisma");
 const { createHttpError } = require("../lib/http");
+const { deleteCloudinaryImage } = require("../lib/cloudinaryUtils");
 
 async function getProducts() {
   return prisma.product.findMany({
@@ -39,7 +40,12 @@ async function createProduct(data) {
 }
 
 async function updateProduct(id, data) {
-  await getProductById(id);
+  const existingProduct = await getProductById(id);
+
+  // If image URL is being changed, delete the old image from Cloudinary
+  if (data.imageUrl && data.imageUrl !== existingProduct.imageUrl) {
+    await deleteCloudinaryImage(existingProduct.imageUrl);
+  }
 
   return prisma.product.update({
     where: { id },
@@ -55,7 +61,12 @@ async function updateProduct(id, data) {
 }
 
 async function deleteProduct(id) {
-  await getProductById(id);
+  const product = await getProductById(id);
+
+  // Delete the product image from Cloudinary before deleting the product
+  if (product.imageUrl) {
+    await deleteCloudinaryImage(product.imageUrl);
+  }
 
   return prisma.product.delete({
     where: { id }

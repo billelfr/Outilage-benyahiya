@@ -67,11 +67,12 @@ export function useImageUpload({ onUploaded } = {}) {
 
         setProgress(100);
 
-        const result = { path: signature, url: publicUrl, signature };
+        const result = { path: signature, url: publicUrl, signature, file };
         lastUploadRef.current = result;
         setUploadedUrl(publicUrl);
         setUploadedPath(signature);
-        onUploaded?.(publicUrl);
+        // call onUploaded with the original File so the parent can send FormData
+        onUploaded?.(file);
 
         return result;
       } catch (uploadError) {

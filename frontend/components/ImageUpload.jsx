@@ -70,6 +70,7 @@ export function ImageUpload({ value, onChange, disabled = false, onUploadStateCh
     });
 
     try {
+      // uploadImage will validate and then call onUploaded(file)
       await uploadImage(file);
     } catch (uploadError) {
       setLocalError(uploadError.message);

@@ -21,16 +21,27 @@ export function SiteFooter() {
             <a className="block hover:text-foreground" href="mailto:contact@outillage-benyahia.com">
               contact@outillage-benyahia.com
             </a>
+            <a className="block hover:text-foreground" href="https://www.instagram.com/outillagebenyahia/" target="_blank" rel="noopener noreferrer">
+              Instagram
+            </a>
+            <a className="block hover:text-foreground" href="https://www.tiktok.com/@billelforreal" target="_blank" rel="noopener noreferrer">
+              TikTok
+            </a>
           </div>
         </address>
 
         <address className="not-italic">
           <p className="font-black text-foreground">Store Location</p>
-          <p className="mt-3 leading-6">
+          <a
+            className="mt-3 block leading-6 hover:text-foreground"
+            href="https://www.google.com/maps/place/Outillage+benyahia/@36.5417803,3.0824655,17z/data=!4m6!3m5!1s0x128f01a6d3eff275:0xb074f99702174a55!8m2!3d36.5418041!4d3.0824499!16s%2Fg%2F11lkj64fr2!18m1!1e1?entry=ttu&g_ep=EgoyMDI2MDUxNy4wIKXMDSoASAFQAw%3D%3D"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             Outillage General Benyahiya
             <br />
             Alger, Algeria
-          </p>
+          </a>
         </address>
       </div>
     </footer>

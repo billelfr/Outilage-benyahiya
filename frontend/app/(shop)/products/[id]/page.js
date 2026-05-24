@@ -1,8 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { EmptyState } from "@/components/empty-state";
 import { LoadingState } from "@/components/loading-state";
@@ -15,6 +14,7 @@ import { Card } from "@/components/ui/card";
 
 export default function ProductDetailsPage() {
   const params = useParams();
+  const router = useRouter();
   const { addItem } = useCart();
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
@@ -80,9 +80,14 @@ export default function ProductDetailsPage() {
   return (
     <div className="page-shell py-8 md:py-12">
       <div className="mb-6">
-        <Link href="/" className="text-sm font-bold text-muted hover:text-foreground">
-          Back to catalog
-        </Link>
+        <Button
+          onClick={() => router.back()}
+          variant="outline"
+          size="sm"
+          className="gap-2"
+        >
+          ← Back to Shop
+        </Button>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[1.08fr_0.92fr]">

@@ -10,6 +10,7 @@ const defaultValues = {
   name: "",
   category: "",
   price: "",
+  // `image` may be a File (new upload) or a string URL (existing product)
   image: "",
   stock: "",
   description: "",
@@ -50,15 +51,24 @@ export function ProductForm({ initialValues, submitLabel, onSubmit, submitting, 
       return;
     }
 
-    await onSubmit({
-      name: values.name.trim(),
-      category: values.category.trim(),
-      price: Number(values.price),
-      image: values.image.trim(),
-      stock: Number(values.stock || 0),
-      description: values.description.trim(),
-      featured: values.featured,
-    });
+    // Build FormData for multipart/form-data submission.
+    const form = new FormData();
+    form.append("name", String(values.name || "").trim());
+    form.append("category", String(values.category || "").trim());
+    form.append("price", String(Number(values.price) || 0));
+    form.append("stock", String(Number(values.stock || 0)));
+    form.append("description", String(values.description || "").trim());
+    form.append("featured", values.featured ? "true" : "false");
+
+    // Image handling: may be a File (new upload) or a string URL (existing image)
+    if (values.image instanceof File) {
+      form.append("image", values.image);
+    } else if (typeof values.image === "string" && values.image) {
+      // pass existing image URL so backend keeps it unchanged
+      form.append("imageUrl", values.image);
+    }
+
+    await onSubmit(form);
   }
 
   return (
@@ -117,8 +127,9 @@ export function ProductForm({ initialValues, submitLabel, onSubmit, submitting, 
             value={values.image}
             disabled={submitting}
             onUploadStateChange={setImageUploading}
-            onChange={(imageUrl) => {
-              setValues((currentValues) => ({ ...currentValues, image: imageUrl }));
+            onChange={(fileOrUrl) => {
+              // fileOrUrl will be a File when a new image is chosen, or may be a URL string for existing images
+              setValues((currentValues) => ({ ...currentValues, image: fileOrUrl }));
             }}
           />
         </div>

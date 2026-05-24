@@ -107,25 +107,38 @@ export async function fetchAdminProducts() {
 }
 
 export async function createAdminProduct(payload) {
-  const { data } = await adminApi.post(PRODUCTS_ENDPOINT, {
-    name: payload.name,
-    description: payload.description,
-    category: payload.category,
-    price: payload.price,
-    imageUrl: payload.image,
-    stock: payload.stock,
+  const form = payload instanceof FormData ? payload : new FormData();
+
+  if (!(payload instanceof FormData)) {
+    form.append("name", payload.name);
+    form.append("description", payload.description || "");
+    form.append("category", payload.category || "");
+    form.append("price", payload.price);
+    form.append("stock", payload.stock ?? 0);
+    if (payload.image) form.append("image", payload.image);
+  }
+
+  const { data } = await adminApi.post(PRODUCTS_ENDPOINT, form, {
+    // Let the browser/axios set Content-Type including boundary
+    headers: { ...adminApi.defaults.headers },
   });
   return unwrapEntity(data, "product");
 }
 
 export async function updateAdminProduct(id, payload) {
-  const { data } = await adminApi.put(`${PRODUCTS_ENDPOINT}/${id}`, {
-    name: payload.name,
-    description: payload.description,
-    category: payload.category,
-    price: payload.price,
-    imageUrl: payload.image,
-    stock: payload.stock,
+  const form = payload instanceof FormData ? payload : new FormData();
+
+  if (!(payload instanceof FormData)) {
+    form.append("name", payload.name);
+    form.append("description", payload.description || "");
+    form.append("category", payload.category || "");
+    form.append("price", payload.price);
+    form.append("stock", payload.stock ?? 0);
+    if (payload.image) form.append("image", payload.image);
+  }
+
+  const { data } = await adminApi.put(`${PRODUCTS_ENDPOINT}/${id}`, form, {
+    headers: { ...adminApi.defaults.headers },
   });
   return unwrapEntity(data, "product");
 }

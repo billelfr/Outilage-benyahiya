@@ -15,11 +15,25 @@ function validateOrderItems(items) {
   }
 }
 
+function isValidDZPhone(phone) {
+  if (!phone) return false;
+  const cleaned = phone.toString().replace(/[\s\-\(\)]/g, "");
+  return /^(0|\+213|213)([567]\d{8}|[234]\d{7,8})$/.test(cleaned);
+}
+
 async function createOrder(payload) {
   const { customerName, customerPhone, customerAddress, items } = payload;
 
   if (!customerName) {
     throw createHttpError(400, "Customer name is required");
+  }
+
+  if (!customerPhone) {
+    throw createHttpError(400, "Customer phone number is required");
+  }
+
+  if (!isValidDZPhone(customerPhone)) {
+    throw createHttpError(400, "Invalid Algerian phone number format. Please use 05, 06, or 07 followed by 8 digits.");
   }
 
   validateOrderItems(items);
