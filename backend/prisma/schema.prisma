@@ -1,0 +1,93 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("MONGODB_URI")
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  DELIVERED
+  CANCELLED
+}
+
+enum ProductCategory {
+  OUTILLAGE_ELECTRIQUE
+  OUTILLAGE_SANS_FIL
+  OUTILLAGE_A_MAIN
+  PIECE_ACCESSOIRES
+  QUINCAILLERIE_CONSOMMABLES
+  ELECTRICITE_LUMIERE
+  PLOMBERIE
+  NOUVEAUTE
+  PROMOTION
+}
+
+model Admin {
+  id           String    @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  email        String    @unique(map: "admin_email_unique")
+  passwordHash String    @map("password_hash")
+  createdAt    DateTime? @default(now()) @map("created_at")
+
+  @@map("admin")
+}
+
+model Product {
+  id            String           @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  description   String?
+  category      ProductCategory? @map("category")
+  price         Float
+  imageUrl      String?          @map("image_url")
+  stock         Int?
+  createdAt     DateTime?        @default(now()) @map("created_at")
+  orderItems    OrderItem[]
+  wishlistItems WishlistItem[]
+
+  @@map("products")
+}
+
+model Order {
+  id              String      @id @default(auto()) @map("_id") @db.ObjectId
+  customerName    String      @map("customer_name")
+  customerPhone   String?     @map("customer_phone")
+  customerAddress String?     @map("customer_address")
+  description     String?     @map("description")
+  totalPrice      Float?      @map("total_price")
+  status          OrderStatus @default(PENDING)
+  createdAt       DateTime?   @default(now()) @map("created_at")
+  orderItems      OrderItem[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  orderId   String  @map("order_id") @db.ObjectId
+  productId String  @map("product_id") @db.ObjectId
+  quantity  Int
+  price     Float
+  order     Order   @relation(fields: [orderId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
+
+  @@index([orderId], map: "order_items_order_id_idx")
+  @@index([productId], map: "order_items_product_id_idx")
+  @@map("order_items")
+}
+
+model WishlistItem {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  sessionId String   @map("session_id")
+  productId String   @map("product_id") @db.ObjectId
+  createdAt DateTime @default(now()) @map("created_at")
+  product   Product  @relation(fields: [productId], references: [id])
+
+  @@unique([sessionId, productId], map: "wishlist_session_product_unique")
+  @@index([sessionId], map: "wishlist_session_id_idx")
+  @@map("wishlist_items")
+}
