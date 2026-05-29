@@ -39,9 +39,9 @@ async function createOrder(payload) {
   validateOrderItems(items);
 
   const productRefs = [...new Set(items.map((item) => item.productRef))];
-const products = await prisma.product.findMany({
-  where: { reference: { in: productRefs } },
-});
+  const products = await prisma.product.findMany({
+    where: { reference: { in: productRefs } },
+  });
 
   if (products.length !== productRefs.length) {
     throw createHttpError(404, "One or more products were not found");
@@ -51,8 +51,9 @@ const products = await prisma.product.findMany({
   const normalizedItems = items.map((item) => {
     const product = productMap.get(item.productRef);
 
-    if (typeof product.stock === "number" && product.stock < item.quantity) {
-      throw createHttpError(400, `Insufficient stock for product ${product.name}`);
+    // Check if product is available
+    if (!product.isAvailable) {
+      throw createHttpError(400, `Product ${product.name} is not available`);
     }
 
     return {
@@ -65,30 +66,6 @@ const products = await prisma.product.findMany({
   const totalPrice = normalizedItems.reduce((sum, item) => {
     return sum + Number(item.price) * item.quantity;
   }, 0);
-
-  for (const item of normalizedItems) {
-    const product = productMap.get(item.productRef);
-
-    if (typeof product.stock === "number") {
-      const updateResult = await prisma.product.updateMany({
-        where: {
-          reference: item.productRef,
-          stock: {
-            gte: item.quantity
-          }
-        },
-        data: {
-          stock: {
-            decrement: item.quantity
-          }
-        }
-      });
-
-      if (updateResult.count === 0) {
-        throw createHttpError(400, `Insufficient stock for product ${product.name}`);
-      }
-    }
-  }
 
   return prisma.order.create({
     data: {

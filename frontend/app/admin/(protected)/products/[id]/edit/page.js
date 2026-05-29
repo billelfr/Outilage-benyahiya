@@ -87,7 +87,9 @@ export default function EditProductPage() {
             price: product.price,
             reference: product.reference,
             image: product.image,
-            stock: product.stock,
+            isAvailable: product.inStock,
+            isNouvellite: product.isNouvellite,
+            isPromotion: product.isPromotion,
             description: product.description,
             featured: product.featured,
           }}

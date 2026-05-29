@@ -25,7 +25,9 @@ const createProduct = asyncHandler(async (req, res) => {
   const payload = {
     ...body,
     price: body.price !== undefined ? Number(body.price) : body.price,
-    stock: body.stock !== undefined ? parseInt(body.stock, 10) : body.stock,
+    isAvailable: body.isAvailable === "true" ? true : body.isAvailable === "false" ? false : true,
+    isNouvellite: body.isNouvellite === "true" ? true : false,
+    isPromotion: body.isPromotion === "true" ? true : false,
     imageUrl: req.file?.path || body?.imageUrl || null,
   };
 
@@ -44,7 +46,9 @@ const updateProduct = asyncHandler(async (req, res) => {
   const payload = {
     ...body,
     price: body.price !== undefined ? Number(body.price) : body.price,
-    stock: body.stock !== undefined ? parseInt(body.stock, 10) : body.stock,
+    isAvailable: body.isAvailable === "true" ? true : body.isAvailable === "false" ? false : body.isAvailable,
+    isNouvellite: body.isNouvellite === "true" ? true : body.isNouvellite === "false" ? false : body.isNouvellite,
+    isPromotion: body.isPromotion === "true" ? true : body.isPromotion === "false" ? false : body.isPromotion,
     // prefer uploaded file path when present
     imageUrl: req.file?.path || body?.imageUrl || null,
   };

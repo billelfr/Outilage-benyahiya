@@ -23,8 +23,6 @@ enum ProductCategory {
   QUINCAILLERIE_CONSOMMABLES
   ELECTRICITE_LUMIERE
   PLOMBERIE
-  NOUVEAUTE
-  PROMOTION
 }
 
 model Admin {
@@ -38,13 +36,15 @@ model Admin {
 }
 
 model Product {
-  reference     String           @id @map("_id")        // 👈 only this line changed
+  reference     String           @id @map("_id")
   name          String
   description   String?
   category      ProductCategory? @map("category")
   price         Float
   imageUrl      String?          @map("image_url")
-  stock         Int?
+  isAvailable   Boolean?         @default(true) @map("is_available")
+  isNouvellite  Boolean?         @default(false) @map("is_nouvellite")
+  isPromotion   Boolean?         @default(false) @map("is_promotion")
   createdAt     DateTime?        @default(now()) @map("created_at")
   orderItems    OrderItem[]
   wishlistItems WishlistItem[]

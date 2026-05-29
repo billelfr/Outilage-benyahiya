@@ -8,8 +8,8 @@ export function getEntityId(entity) {
 }
 
 export function normalizeProduct(product = {}) {
-  const stock = toNumber(product.stock || product.inventory || product.quantity || 0);
   const reference = product.reference || product.sku || "";
+  const isAvailable = product.isAvailable !== false;
   return {
     id: reference,
     name: product.name || product.title || "Untitled product",
@@ -18,8 +18,9 @@ export function normalizeProduct(product = {}) {
     image: product.image || product.imageUrl || product.thumbnail || product.photo || "",
     price: toNumber(product.price || product.amount || product.unitPrice),
     reference: reference,
-    stock: stock,
-    inStock: stock > 0,
+    inStock: isAvailable,
+    isNouvellite: Boolean(product.isNouvellite),
+    isPromotion: Boolean(product.isPromotion),
     featured: Boolean(product.featured || product.isFeatured),
     raw: product,
   };

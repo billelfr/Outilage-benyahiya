@@ -39,7 +39,9 @@ async function createProduct(data) {
       category: data.category || null,
       price: data.price,
       imageUrl: data.imageUrl || null,
-      stock: data.stock ?? 0
+      isAvailable: data.isAvailable ?? true,
+      isNouvellite: data.isNouvellite ?? false,
+      isPromotion: data.isPromotion ?? false,
     }
   });
 }
@@ -60,7 +62,9 @@ async function updateProduct(reference, data) {
       category: data.category,
       price: data.price,
       imageUrl: data.imageUrl,
-      stock: data.stock
+      isAvailable: data.isAvailable,
+      isNouvellite: data.isNouvellite,
+      isPromotion: data.isPromotion,
     }
   });
 }

@@ -25,8 +25,20 @@ export function ProductCard({ product }) {
             sizes="(min-width: 1280px) 30vw, (min-width: 768px) 45vw, 90vw"
             className="object-cover transition duration-700 group-hover:scale-[1.05]"
           />
-          <div className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-bold text-muted-strong shadow-sm backdrop-blur">
-            {formatCategory(normalizedProduct.category)}
+          <div className="absolute left-4 top-4 flex flex-wrap gap-2">
+            <div className="rounded-full bg-white/90 px-3 py-1 text-xs font-bold text-muted-strong shadow-sm backdrop-blur">
+              {formatCategory(normalizedProduct.category)}
+            </div>
+            {normalizedProduct.isNouvellite && (
+              <div className="rounded-full bg-blue-500 px-3 py-1 text-xs font-bold text-white shadow-sm">
+                Nouveauté
+              </div>
+            )}
+            {normalizedProduct.isPromotion && (
+              <div className="rounded-full bg-red-500 px-3 py-1 text-xs font-bold text-white shadow-sm">
+                Promotion
+              </div>
+            )}
           </div>
           {!normalizedProduct.inStock && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm">

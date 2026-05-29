@@ -11,9 +11,10 @@ const defaultValues = {
   category: "",
   price: "",
   reference: "",
-  // `image` may be a File (new upload) or a string URL (existing product)
   image: "",
-  stock: "",
+  isAvailable: true,
+  isNouvellite: false,
+  isPromotion: false,
   description: "",
   featured: false,
 };
@@ -26,8 +27,6 @@ const CATEGORIES = [
   { value: "QUINCAILLERIE_CONSOMMABLES", label: "Quincaillerie & consommables" },
   { value: "ELECTRICITE_LUMIERE", label: "Électricité & lumière" },
   { value: "PLOMBERIE", label: "Plomberie" },
-  { value: "NOUVEAUTE", label: "Nouveauté" },
-  { value: "PROMOTION", label: "Promotion" },
 ];
 
 export function ProductForm({ initialValues, submitLabel, onSubmit, submitting, errorMessage }) {
@@ -58,7 +57,9 @@ export function ProductForm({ initialValues, submitLabel, onSubmit, submitting, 
     form.append("category", String(values.category || "").trim());
     form.append("price", String(Number(values.price) || 0));
     form.append("reference", String(values.reference || "").trim());
-    form.append("stock", String(Number(values.stock || 0)));
+    form.append("isAvailable", values.isAvailable ? "true" : "false");
+    form.append("isNouvellite", values.isNouvellite ? "true" : "false");
+    form.append("isPromotion", values.isPromotion ? "true" : "false");
     form.append("description", String(values.description || "").trim());
     form.append("featured", values.featured ? "true" : "false");
 
@@ -122,14 +123,41 @@ export function ProductForm({ initialValues, submitLabel, onSubmit, submitting, 
             placeholder="e.g., SKU-12345"
             required
           />
-          <FormField
-            label="Stock"
-            name="stock"
-            type="number"
-            value={values.stock}
-            onChange={handleChange}
-            placeholder="80"
-          />
+        </div>
+
+        <div className="mt-5 space-y-3">
+          <label className="flex items-center gap-3 rounded-2xl border border-line bg-white/75 px-4 py-3">
+            <input
+              type="checkbox"
+              name="isAvailable"
+              checked={values.isAvailable}
+              onChange={handleChange}
+              className="h-4 w-4 accent-[var(--accent-strong)]"
+            />
+            <span className="text-sm font-semibold text-muted-strong">Product is available</span>
+          </label>
+
+          <label className="flex items-center gap-3 rounded-2xl border border-line bg-white/75 px-4 py-3">
+            <input
+              type="checkbox"
+              name="isNouvellite"
+              checked={values.isNouvellite}
+              onChange={handleChange}
+              className="h-4 w-4 accent-[var(--accent-strong)]"
+            />
+            <span className="text-sm font-semibold text-muted-strong">Mark as Nouveauté</span>
+          </label>
+
+          <label className="flex items-center gap-3 rounded-2xl border border-line bg-white/75 px-4 py-3">
+            <input
+              type="checkbox"
+              name="isPromotion"
+              checked={values.isPromotion}
+              onChange={handleChange}
+              className="h-4 w-4 accent-[var(--accent-strong)]"
+            />
+            <span className="text-sm font-semibold text-muted-strong">Mark as Promotion</span>
+          </label>
         </div>
 
         <div className="mt-5">
