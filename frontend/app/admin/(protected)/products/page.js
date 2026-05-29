@@ -271,9 +271,11 @@ export default function AdminProductsPage() {
               <thead className="bg-slate-50 border-b border-line">
                 <tr>
                   <th className="px-5 py-4 text-left text-xs font-bold uppercase tracking-wider text-muted-strong">Product</th>
+                  <th className="px-5 py-4 text-left text-xs font-bold uppercase tracking-wider text-muted-strong">Reference</th>
                   <th className="px-5 py-4 text-left text-xs font-bold uppercase tracking-wider text-muted-strong">Category</th>
                   <th className="px-5 py-4 text-left text-xs font-bold uppercase tracking-wider text-muted-strong">Price</th>
                   <th className="px-5 py-4 text-left text-xs font-bold uppercase tracking-wider text-muted-strong">Stock</th>
+                  <th className="px-5 py-4 text-left text-xs font-bold uppercase tracking-wider text-muted-strong">Status</th>
                   <th className="px-5 py-4 text-left text-xs font-bold uppercase tracking-wider text-muted-strong">Actions</th>
                 </tr>
               </thead>
@@ -296,9 +298,11 @@ export default function AdminProductsPage() {
                         </div>
                         <div className="min-w-0">
                           <p className="font-semibold text-sm text-foreground truncate">{product.name}</p>
-                          <p className="text-xs text-muted truncate">{product.id}</p>
                         </div>
                       </div>
+                    </td>
+                    <td className="px-5 py-4">
+                      <span className="text-sm text-foreground font-mono">{product.reference || "-"}</span>
                     </td>
                     <td className="px-5 py-4">
                       <span className="text-sm text-foreground">{formatCategory(product.category)}</span>
@@ -308,6 +312,11 @@ export default function AdminProductsPage() {
                     </td>
                     <td className="px-5 py-4">
                       <span className="text-sm text-foreground font-medium">{product.stock || 0}</span>
+                    </td>
+                    <td className="px-5 py-4">
+                      <span className={`text-xs font-bold px-2 py-1 rounded-full ${product.inStock ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                        {product.inStock ? 'In Stock' : 'Out of Stock'}
+                      </span>
                     </td>
                     <td className="px-5 py-4">
                       <div className="flex gap-2">

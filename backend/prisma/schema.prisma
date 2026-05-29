@@ -38,7 +38,7 @@ model Admin {
 }
 
 model Product {
-  id            String           @id @default(auto()) @map("_id") @db.ObjectId
+  reference     String           @id @map("_id")        // 👈 only this line changed
   name          String
   description   String?
   category      ProductCategory? @map("category")
@@ -67,27 +67,27 @@ model Order {
 }
 
 model OrderItem {
-  id        String  @id @default(auto()) @map("_id") @db.ObjectId
-  orderId   String  @map("order_id") @db.ObjectId
-  productId String  @map("product_id") @db.ObjectId
-  quantity  Int
-  price     Float
-  order     Order   @relation(fields: [orderId], references: [id])
-  product   Product @relation(fields: [productId], references: [id])
+  id         String  @id @default(auto()) @map("_id") @db.ObjectId
+  orderId    String  @map("order_id") @db.ObjectId
+  productRef String  @map("product_ref")
+  quantity   Int
+  price      Float
+  order      Order   @relation(fields: [orderId], references: [id])
+  product    Product @relation(fields: [productRef], references: [reference], onDelete: Cascade)
 
   @@index([orderId], map: "order_items_order_id_idx")
-  @@index([productId], map: "order_items_product_id_idx")
+  @@index([productRef], map: "order_items_product_ref_idx")
   @@map("order_items")
 }
 
 model WishlistItem {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  sessionId String   @map("session_id")
-  productId String   @map("product_id") @db.ObjectId
-  createdAt DateTime @default(now()) @map("created_at")
-  product   Product  @relation(fields: [productId], references: [id])
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  sessionId  String   @map("session_id")
+  productRef String   @map("product_ref")
+  createdAt  DateTime @default(now()) @map("created_at")
+  product    Product  @relation(fields: [productRef], references: [reference], onDelete: Cascade)
 
-  @@unique([sessionId, productId], map: "wishlist_session_product_unique")
+  @@unique([sessionId, productRef], map: "wishlist_session_product_unique")
   @@index([sessionId], map: "wishlist_session_id_idx")
   @@map("wishlist_items")
 }

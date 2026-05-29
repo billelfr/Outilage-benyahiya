@@ -9,8 +9,8 @@ function validateOrderItems(items) {
   }
 
   for (const item of items) {
-    if (!item.productId || !Number.isInteger(item.quantity) || item.quantity <= 0) {
-      throw createHttpError(400, "Each order item must include productId and a positive quantity");
+    if (!item.productRef || !Number.isInteger(item.quantity) || item.quantity <= 0) {
+      throw createHttpError(400, "Each order item must include product reference and a positive quantity");
     }
   }
 }
@@ -38,29 +38,25 @@ async function createOrder(payload) {
 
   validateOrderItems(items);
 
-  const productIds = [...new Set(items.map((item) => item.productId))];
-  const products = await prisma.product.findMany({
-    where: {
-      id: {
-        in: productIds
-      }
-    }
-  });
+  const productRefs = [...new Set(items.map((item) => item.productRef))];
+const products = await prisma.product.findMany({
+  where: { reference: { in: productRefs } },
+});
 
-  if (products.length !== productIds.length) {
+  if (products.length !== productRefs.length) {
     throw createHttpError(404, "One or more products were not found");
   }
 
-  const productMap = new Map(products.map((product) => [product.id, product]));
+  const productMap = new Map(products.map((product) => [product.reference, product]));
   const normalizedItems = items.map((item) => {
-    const product = productMap.get(item.productId);
+    const product = productMap.get(item.productRef);
 
     if (typeof product.stock === "number" && product.stock < item.quantity) {
       throw createHttpError(400, `Insufficient stock for product ${product.name}`);
     }
 
     return {
-      productId: product.id,
+      productRef: product.reference,
       quantity: item.quantity,
       price: product.price
     };
@@ -71,12 +67,12 @@ async function createOrder(payload) {
   }, 0);
 
   for (const item of normalizedItems) {
-    const product = productMap.get(item.productId);
+    const product = productMap.get(item.productRef);
 
     if (typeof product.stock === "number") {
       const updateResult = await prisma.product.updateMany({
         where: {
-          id: item.productId,
+          reference: item.productRef,
           stock: {
             gte: item.quantity
           }
@@ -103,7 +99,7 @@ async function createOrder(payload) {
       totalPrice,
       orderItems: {
         create: normalizedItems.map((item) => ({
-          productId: item.productId,
+          productRef: item.productRef,
           quantity: item.quantity,
           price: item.price
         }))

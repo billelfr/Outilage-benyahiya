@@ -8,14 +8,18 @@ export function getEntityId(entity) {
 }
 
 export function normalizeProduct(product = {}) {
+  const stock = toNumber(product.stock || product.inventory || product.quantity || 0);
+  const reference = product.reference || product.sku || "";
   return {
-    id: getEntityId(product),
+    id: reference,
     name: product.name || product.title || "Untitled product",
     description: product.description || product.details || "No description provided yet.",
     category: product.category || product.collection || "General",
     image: product.image || product.imageUrl || product.thumbnail || product.photo || "",
     price: toNumber(product.price || product.amount || product.unitPrice),
-    stock: toNumber(product.stock || product.inventory || product.quantity || 0),
+    reference: reference,
+    stock: stock,
+    inStock: stock > 0,
     featured: Boolean(product.featured || product.isFeatured),
     raw: product,
   };

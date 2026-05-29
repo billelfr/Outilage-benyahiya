@@ -10,9 +10,9 @@ async function getProducts() {
   });
 }
 
-async function getProductById(id) {
+async function getProductById(reference) {
   const product = await prisma.product.findUnique({
-    where: { id }
+    where: { reference }
   });
 
   if (!product) {
@@ -27,8 +27,13 @@ async function createProduct(data) {
     throw createHttpError(400, "Product name and price are required");
   }
 
+  if (!data.reference || typeof data.reference !== "string" || !data.reference.trim()) {
+    throw createHttpError(400, "Product reference (SKU) is required and must be unique");
+  }
+
   return prisma.product.create({
     data: {
+      reference: data.reference.trim(),
       name: data.name,
       description: data.description || null,
       category: data.category || null,
@@ -39,8 +44,8 @@ async function createProduct(data) {
   });
 }
 
-async function updateProduct(id, data) {
-  const existingProduct = await getProductById(id);
+async function updateProduct(reference, data) {
+  const existingProduct = await getProductById(reference);
 
   // If image URL is being changed, delete the old image from Cloudinary
   if (data.imageUrl && data.imageUrl !== existingProduct.imageUrl) {
@@ -48,7 +53,7 @@ async function updateProduct(id, data) {
   }
 
   return prisma.product.update({
-    where: { id },
+    where: { reference },
     data: {
       name: data.name,
       description: data.description,
@@ -60,8 +65,8 @@ async function updateProduct(id, data) {
   });
 }
 
-async function deleteProduct(id) {
-  const product = await getProductById(id);
+async function deleteProduct(reference) {
+  const product = await getProductById(reference);
 
   // Delete the product image from Cloudinary before deleting the product
   if (product.imageUrl) {
@@ -69,7 +74,7 @@ async function deleteProduct(id) {
   }
 
   return prisma.product.delete({
-    where: { id }
+    where: { reference }
   });
 }
 

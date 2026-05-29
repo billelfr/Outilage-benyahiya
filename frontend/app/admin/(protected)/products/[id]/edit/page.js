@@ -85,6 +85,7 @@ export default function EditProductPage() {
             name: product.name,
             category: product.category,
             price: product.price,
+            reference: product.reference,
             image: product.image,
             stock: product.stock,
             description: product.description,

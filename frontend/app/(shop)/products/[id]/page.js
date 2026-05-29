@@ -107,27 +107,45 @@ export default function ProductDetailsPage() {
         </Card>
 
         <Card className="p-7 md:p-10">
-          <p className="text-xs font-bold uppercase tracking-[0.22em] text-accent-strong">
-            {formatCategory(product.category)}
-          </p>
+          <div className="flex items-center justify-between">
+            <p className="text-xs font-bold uppercase tracking-[0.22em] text-accent-strong">
+              {formatCategory(product.category)}
+            </p>
+            {!product.inStock && (
+              <span className="bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold">
+                Out of Stock
+              </span>
+            )}
+          </div>
+          {product.reference && (
+            <p className="mt-2 text-xs text-muted font-mono">Ref: {product.reference}</p>
+          )}
           <h1 className="mt-4 text-4xl font-bold leading-none tracking-tight md:text-6xl">{product.name}</h1>
           <p className="mt-5 text-base leading-7 text-muted">{product.description}</p>
           <p className="mt-8 text-4xl font-bold tracking-tight">{formatCurrency(product.price)}</p>
 
           <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
-            <label className="flex min-h-14 items-center justify-between rounded-2xl border border-line bg-white/80 px-4 sm:min-w-40">
-              <span className="text-sm font-bold text-muted-strong">Quantity</span>
-              <input
-                type="number"
-                min="1"
-                value={quantity}
-                onChange={(event) => setQuantity(Math.max(1, Number(event.target.value) || 1))}
-                className="w-16 bg-transparent text-right font-semibold outline-none"
-              />
-            </label>
-            <Button onClick={() => addItem(product, quantity)} size="lg" className="sm:flex-1">
-              Add to cart
-            </Button>
+            {product.inStock ? (
+              <>
+                <label className="flex min-h-14 items-center justify-between rounded-2xl border border-line bg-white/80 px-4 sm:min-w-40">
+                  <span className="text-sm font-bold text-muted-strong">Quantity</span>
+                  <input
+                    type="number"
+                    min="1"
+                    value={quantity}
+                    onChange={(event) => setQuantity(Math.max(1, Number(event.target.value) || 1))}
+                    className="w-16 bg-transparent text-right font-semibold outline-none"
+                  />
+                </label>
+                <Button onClick={() => addItem(product, quantity)} size="lg" className="sm:flex-1">
+                  Add to cart
+                </Button>
+              </>
+            ) : (
+              <Button disabled size="lg" className="sm:flex-1">
+                Out of Stock
+              </Button>
+            )}
           </div>
 
           <div className="mt-8 grid gap-3 text-sm text-muted md:grid-cols-2">

@@ -76,8 +76,9 @@ export async function fetchProducts() {
   return unwrapCollection(data, "products");
 }
 
-export async function fetchProduct(id) {
-  const { data } = await api.get(`${PRODUCTS_ENDPOINT}/${id}`);
+export async function fetchProduct(reference) {
+  const encodedRef = encodeURIComponent(reference);
+  const { data } = await api.get(`${PRODUCTS_ENDPOINT}/${encodedRef}`);
   return unwrapEntity(data, "product");
 }
 
@@ -125,7 +126,7 @@ export async function createAdminProduct(payload) {
   return unwrapEntity(data, "product");
 }
 
-export async function updateAdminProduct(id, payload) {
+export async function updateAdminProduct(reference, payload) {
   const form = payload instanceof FormData ? payload : new FormData();
 
   if (!(payload instanceof FormData)) {
@@ -137,13 +138,15 @@ export async function updateAdminProduct(id, payload) {
     if (payload.image) form.append("image", payload.image);
   }
 
-  const { data } = await adminApi.put(`${PRODUCTS_ENDPOINT}/${id}`, form, {
+  const encodedRef = encodeURIComponent(reference);
+  const { data } = await adminApi.put(`${PRODUCTS_ENDPOINT}/${encodedRef}`, form, {
     headers: { ...adminApi.defaults.headers },
   });
   return unwrapEntity(data, "product");
 }
 
-export async function deleteAdminProduct(id) {
-  const { data } = await adminApi.delete(`${PRODUCTS_ENDPOINT}/${id}`);
+export async function deleteAdminProduct(reference) {
+  const encodedRef = encodeURIComponent(reference);
+  const { data } = await adminApi.delete(`${PRODUCTS_ENDPOINT}/${encodedRef}`);
   return unwrapEntity(data, "product");
 }

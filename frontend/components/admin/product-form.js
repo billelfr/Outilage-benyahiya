@@ -10,6 +10,7 @@ const defaultValues = {
   name: "",
   category: "",
   price: "",
+  reference: "",
   // `image` may be a File (new upload) or a string URL (existing product)
   image: "",
   stock: "",
@@ -56,6 +57,7 @@ export function ProductForm({ initialValues, submitLabel, onSubmit, submitting, 
     form.append("name", String(values.name || "").trim());
     form.append("category", String(values.category || "").trim());
     form.append("price", String(Number(values.price) || 0));
+    form.append("reference", String(values.reference || "").trim());
     form.append("stock", String(Number(values.stock || 0)));
     form.append("description", String(values.description || "").trim());
     form.append("featured", values.featured ? "true" : "false");
@@ -110,6 +112,14 @@ export function ProductForm({ initialValues, submitLabel, onSubmit, submitting, 
             value={values.price}
             onChange={handleChange}
             placeholder="24.99"
+            required
+          />
+          <FormField
+            label="Reference (SKU)"
+            name="reference"
+            value={values.reference}
+            onChange={handleChange}
+            placeholder="e.g., SKU-12345"
             required
           />
           <FormField

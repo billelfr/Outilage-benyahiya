@@ -8,7 +8,7 @@ function normalizeItems(items) {
   }
 
   return items.map((item) => ({
-    productId: String(item.productId || item.id || ""),
+    productRef: String(item.productRef || item.id || item.productId || ""),
     name: String(item.name || "Product"),
     quantity: Math.max(1, Number(item.quantity) || 1),
     price: Number(item.price) || 0,
@@ -101,7 +101,7 @@ export async function createOrderRecord(payload) {
         description: payload.description ? String(payload.description).trim() : undefined,
         customerAddress: payload.address.trim(),
         items: items.map((item) => ({
-          productId: item.productId,
+          productRef: item.productRef,
           quantity: item.quantity,
         })),
       }),

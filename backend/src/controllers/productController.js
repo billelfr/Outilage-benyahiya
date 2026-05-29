@@ -11,7 +11,8 @@ const getProducts = asyncHandler(async (req, res) => {
 });
 
 const getProductById = asyncHandler(async (req, res) => {
-  const product = await productService.getProductById(req.params.id);
+  const reference = decodeURIComponent(req.params.id);
+  const product = await productService.getProductById(reference);
 
   res.status(200).json({
     success: true,
@@ -38,6 +39,7 @@ const createProduct = asyncHandler(async (req, res) => {
 });
 
 const updateProduct = asyncHandler(async (req, res) => {
+  const reference = decodeURIComponent(req.params.id);
   const body = req.body || {};
   const payload = {
     ...body,
@@ -47,7 +49,7 @@ const updateProduct = asyncHandler(async (req, res) => {
     imageUrl: req.file?.path || body?.imageUrl || null,
   };
 
-  const product = await productService.updateProduct(req.params.id, payload);
+  const product = await productService.updateProduct(reference, payload);
 
   res.status(200).json({
     success: true,
@@ -57,7 +59,8 @@ const updateProduct = asyncHandler(async (req, res) => {
 });
 
 const deleteProduct = asyncHandler(async (req, res) => {
-  await productService.deleteProduct(req.params.id);
+  const reference = decodeURIComponent(req.params.id);
+  await productService.deleteProduct(reference);
 
   res.status(200).json({
     success: true,
