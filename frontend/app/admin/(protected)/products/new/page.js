@@ -18,7 +18,12 @@ export default function NewProductPage() {
       await createAdminProduct(values);
       router.replace("/admin/products");
     } catch (submitError) {
-      setError(getErrorMessage(submitError, "We could not create the product."));
+      setError(
+        getErrorMessage(
+          submitError,
+          "Nous n'avons pas pu créer le produit."
+        )
+      );
     } finally {
       setSubmitting(false);
     }
@@ -28,14 +33,14 @@ export default function NewProductPage() {
     <div className="space-y-6">
       <Card className="p-6 md:p-8">
         <SectionHeader
-          eyebrow="Products"
-          title="Create a new product"
-          description="Add clear product copy, pricing, stock, and imagery for the storefront catalog."
+          eyebrow="Produits"
+          title="Créer un nouveau produit"
+          description="Ajoutez une description claire du produit, le prix, le stock et les images pour le catalogue de la boutique."
         />
       </Card>
 
       <ProductForm
-        submitLabel="Create product"
+        submitLabel="Créer le produit"
         onSubmit={handleSubmit}
         submitting={submitting}
         errorMessage={error}

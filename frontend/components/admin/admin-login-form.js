@@ -13,13 +13,22 @@ import { Logo } from "@/components/ui/Logo";
 export function AdminLoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [formValues, setFormValues] = useState({ email: "", password: "" });
+
+  const [formValues, setFormValues] = useState({
+    email: "",
+    password: "",
+  });
+
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
   function handleChange(event) {
     const { name, value } = event.target;
-    setFormValues((currentValues) => ({ ...currentValues, [name]: value }));
+
+    setFormValues((currentValues) => ({
+      ...currentValues,
+      [name]: value,
+    }));
   }
 
   async function handleSubmit(event) {
@@ -28,16 +37,22 @@ export function AdminLoginForm() {
     try {
       setSubmitting(true);
       setError("");
+
       const response = await loginAdmin(formValues);
 
       if (!response.token) {
-        throw new Error("The login response did not include a JWT token.");
+        throw new Error(
+          "La réponse de connexion ne contient pas de jeton JWT."
+        );
       }
 
       setAdminToken(response.token);
+
       router.replace(searchParams.get("next") || "/admin");
     } catch (loginError) {
-      setError(getErrorMessage(loginError, "Admin login failed."));
+      setError(
+        getErrorMessage(loginError, "Échec de la connexion administrateur.")
+      );
     } finally {
       setSubmitting(false);
     }
@@ -47,30 +62,43 @@ export function AdminLoginForm() {
     <Card className="w-full max-w-lg p-8 md:p-10">
       <div className="mb-8 flex items-center gap-3">
         <Logo size="small" priority className="!h-15 !w-20" />
+
         <div>
-          <p className="font-bold">Admin portal</p>
-          <p className="text-sm text-muted">Admin access</p>
+          <p className="font-bold">Portail administrateur</p>
+
+          <p className="text-sm text-muted">
+            Accès administrateur
+          </p>
         </div>
       </div>
-      <p className="text-xs font-bold uppercase tracking-[0.22em] text-accent-strong">Secure console</p>
-      <h1 className="mt-4 text-4xl font-bold leading-none tracking-tight">Sign in to manage the shop</h1>
+
+      <p className="text-xs font-bold uppercase tracking-[0.22em] text-accent-strong">
+        Console sécurisée
+      </p>
+
+      <h1 className="mt-4 text-4xl font-bold leading-none tracking-tight">
+        Connectez-vous pour gérer la boutique
+      </h1>
+
       <p className="mt-4 text-sm leading-6 text-muted">
-        This login stores the JWT in localStorage for Axios and mirrors it into a cookie so admin
-        routes can be protected on navigation.
+        Cette connexion stocke le JWT dans le localStorage pour Axios
+        et le copie dans un cookie afin de protéger les routes
+        administrateur lors de la navigation.
       </p>
 
       <form onSubmit={handleSubmit} className="mt-8 space-y-5">
         <FormField
-          label="Email"
+          label="E-mail"
           name="email"
           type="email"
           value={formValues.email}
           onChange={handleChange}
-          placeholder="admin@example.com"
+          placeholder="admin@exemple.com"
           required
         />
+
         <FormField
-          label="Password"
+          label="Mot de passe"
           name="password"
           type="password"
           value={formValues.password}
@@ -79,14 +107,30 @@ export function AdminLoginForm() {
           required
         />
 
-        {error ? <p className="text-sm font-medium text-danger">{error}</p> : null}
+        {error ? (
+          <p className="text-sm font-medium text-danger">
+            {error}
+          </p>
+        ) : null}
 
-        <Button type="submit" disabled={submitting} className="w-full">
-          {submitting ? "Signing in..." : "Sign in"}
+        <Button
+          type="submit"
+          disabled={submitting}
+          className="w-full"
+        >
+          {submitting
+            ? "Connexion en cours..."
+            : "Se connecter"}
         </Button>
       </form>
 
-      <Button href="/" variant="secondary" className="mt-4 w-full">Back to store</Button>
+      <Button
+        href="/"
+        variant="secondary"
+        className="mt-4 w-full"
+      >
+        Retour à la boutique
+      </Button>
     </Card>
   );
 }

@@ -23,21 +23,29 @@ const CATEGORIES = [
   { value: "OUTILLAGE_ELECTRIQUE", label: "Outillage électrique" },
   { value: "OUTILLAGE_SANS_FIL", label: "Outillage sans fil" },
   { value: "OUTILLAGE_A_MAIN", label: "Outillage à main" },
-  { value: "PIECE_ACCESSOIRES", label: "Pièce & accessoires" },
+  { value: "PIECE_ACCESSOIRES", label: "Pièces & accessoires" },
   { value: "QUINCAILLERIE_CONSOMMABLES", label: "Quincaillerie & consommables" },
   { value: "ELECTRICITE_LUMIERE", label: "Électricité & lumière" },
   { value: "PLOMBERIE", label: "Plomberie" },
 ];
 
-export function ProductForm({ initialValues, submitLabel, onSubmit, submitting, errorMessage }) {
+export function ProductForm({
+  initialValues,
+  submitLabel,
+  onSubmit,
+  submitting,
+  errorMessage,
+}) {
   const [values, setValues] = useState({
     ...defaultValues,
     ...initialValues,
   });
+
   const [imageUploading, setImageUploading] = useState(false);
 
   function handleChange(event) {
     const { name, value, type, checked } = event.target;
+
     setValues((currentValues) => ({
       ...currentValues,
       [name]: type === "checkbox" ? checked : value,
@@ -51,8 +59,8 @@ export function ProductForm({ initialValues, submitLabel, onSubmit, submitting, 
       return;
     }
 
-    // Build FormData for multipart/form-data submission.
     const form = new FormData();
+
     form.append("name", String(values.name || "").trim());
     form.append("category", String(values.category || "").trim());
     form.append("price", String(Number(values.price) || 0));
@@ -63,11 +71,9 @@ export function ProductForm({ initialValues, submitLabel, onSubmit, submitting, 
     form.append("description", String(values.description || "").trim());
     form.append("featured", values.featured ? "true" : "false");
 
-    // Image handling: may be a File (new upload) or a string URL (existing image)
     if (values.image instanceof File) {
       form.append("image", values.image);
     } else if (typeof values.image === "string" && values.image) {
-      // pass existing image URL so backend keeps it unchanged
       form.append("imageUrl", values.image);
     }
 
@@ -79,17 +85,22 @@ export function ProductForm({ initialValues, submitLabel, onSubmit, submitting, 
       <form onSubmit={handleSubmit}>
         <div className="grid gap-5 md:grid-cols-2">
           <FormField
-            label="Product name"
+            label="Nom du produit"
             name="name"
             value={values.name}
             onChange={handleChange}
-            placeholder="Stoneware mug"
+            placeholder="Perceuse sans fil"
             required
           />
+
           <div>
-            <label htmlFor="category" className="block text-sm font-semibold text-muted-strong mb-2">
-              Category <span className="text-danger">*</span>
+            <label
+              htmlFor="category"
+              className="block text-sm font-semibold text-muted-strong mb-2"
+            >
+              Catégorie <span className="text-danger">*</span>
             </label>
+
             <select
               id="category"
               name="category"
@@ -98,7 +109,8 @@ export function ProductForm({ initialValues, submitLabel, onSubmit, submitting, 
               required
               className="w-full px-4 py-2 rounded-lg border border-line bg-white text-foreground outline-none focus:border-accent-strong"
             >
-              <option value="">Select a category</option>
+              <option value="">Sélectionnez une catégorie</option>
+
               {CATEGORIES.map((cat) => (
                 <option key={cat.value} value={cat.value}>
                   {cat.label}
@@ -106,21 +118,23 @@ export function ProductForm({ initialValues, submitLabel, onSubmit, submitting, 
               ))}
             </select>
           </div>
+
           <FormField
-            label="Price"
+            label="Prix"
             name="price"
             type="number"
             value={values.price}
             onChange={handleChange}
-            placeholder="24.99"
+            placeholder="2499"
             required
           />
+
           <FormField
-            label="Reference (SKU)"
+            label="Référence (SKU)"
             name="reference"
             value={values.reference}
             onChange={handleChange}
-            placeholder="e.g., SKU-12345"
+            placeholder="ex : SKU-12345"
             required
           />
         </div>
@@ -134,7 +148,10 @@ export function ProductForm({ initialValues, submitLabel, onSubmit, submitting, 
               onChange={handleChange}
               className="h-4 w-4 accent-[var(--accent-strong)]"
             />
-            <span className="text-sm font-semibold text-muted-strong">Product is available</span>
+
+            <span className="text-sm font-semibold text-muted-strong">
+              Produit disponible
+            </span>
           </label>
 
           <label className="flex items-center gap-3 rounded-2xl border border-line bg-white/75 px-4 py-3">
@@ -145,7 +162,10 @@ export function ProductForm({ initialValues, submitLabel, onSubmit, submitting, 
               onChange={handleChange}
               className="h-4 w-4 accent-[var(--accent-strong)]"
             />
-            <span className="text-sm font-semibold text-muted-strong">Mark as Nouveauté</span>
+
+            <span className="text-sm font-semibold text-muted-strong">
+              Marquer comme nouveauté
+            </span>
           </label>
 
           <label className="flex items-center gap-3 rounded-2xl border border-line bg-white/75 px-4 py-3">
@@ -156,7 +176,10 @@ export function ProductForm({ initialValues, submitLabel, onSubmit, submitting, 
               onChange={handleChange}
               className="h-4 w-4 accent-[var(--accent-strong)]"
             />
-            <span className="text-sm font-semibold text-muted-strong">Mark as Promotion</span>
+
+            <span className="text-sm font-semibold text-muted-strong">
+              Marquer comme promotion
+            </span>
           </label>
         </div>
 
@@ -166,8 +189,10 @@ export function ProductForm({ initialValues, submitLabel, onSubmit, submitting, 
             disabled={submitting}
             onUploadStateChange={setImageUploading}
             onChange={(fileOrUrl) => {
-              // fileOrUrl will be a File when a new image is chosen, or may be a URL string for existing images
-              setValues((currentValues) => ({ ...currentValues, image: fileOrUrl }));
+              setValues((currentValues) => ({
+                ...currentValues,
+                image: fileOrUrl,
+              }));
             }}
           />
         </div>
@@ -179,7 +204,7 @@ export function ProductForm({ initialValues, submitLabel, onSubmit, submitting, 
             type="textarea"
             value={values.description}
             onChange={handleChange}
-            placeholder="A short, useful description of the product."
+            placeholder="Une description courte et utile du produit."
             required
             rows={6}
           />
@@ -193,19 +218,34 @@ export function ProductForm({ initialValues, submitLabel, onSubmit, submitting, 
             onChange={handleChange}
             className="h-4 w-4 accent-[var(--accent-strong)]"
           />
-          <span className="text-sm font-semibold text-muted-strong">Mark as featured</span>
+
+          <span className="text-sm font-semibold text-muted-strong">
+            Marquer comme produit vedette
+          </span>
         </label>
 
-        {errorMessage ? <p className="mt-5 text-sm font-medium text-danger">{errorMessage}</p> : null}
+        {errorMessage ? (
+          <p className="mt-5 text-sm font-medium text-danger">
+            {errorMessage}
+          </p>
+        ) : null}
+
         {imageUploading ? (
           <p className="mt-5 rounded-2xl bg-yellow-50 px-4 py-3 text-sm font-semibold text-muted-strong">
-            Uploading image before saving product.
+            Téléchargement de l'image avant l'enregistrement du produit.
           </p>
         ) : null}
 
         <div className="mt-6 flex justify-end">
-          <Button type="submit" disabled={submitting || imageUploading}>
-            {imageUploading ? "Uploading image..." : submitting ? "Saving..." : submitLabel}
+          <Button
+            type="submit"
+            disabled={submitting || imageUploading}
+          >
+            {imageUploading
+              ? "Téléchargement..."
+              : submitting
+              ? "Enregistrement..."
+              : submitLabel}
           </Button>
         </div>
       </form>

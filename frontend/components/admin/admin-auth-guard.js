@@ -7,12 +7,17 @@ import { useAdminSession } from "@/components/admin/admin-session-provider";
 
 export function AdminAuthGuard({ children }) {
   const { admin, loading } = useAdminSession();
+
   const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
     if (!loading && !admin) {
-      router.replace(`/admin/login?next=${encodeURIComponent(pathname || "/admin")}`);
+      router.replace(
+        `/admin/login?next=${encodeURIComponent(
+          pathname || "/admin"
+        )}`
+      );
     }
   }, [admin, loading, pathname, router]);
 
@@ -20,8 +25,8 @@ export function AdminAuthGuard({ children }) {
     return (
       <div className="page-shell py-16">
         <LoadingState
-          title="Checking admin session"
-          description="Verifying your credentials before loading the dashboard."
+          title="Vérification de la session administrateur"
+          description="Validation de vos identifiants avant le chargement du tableau de bord."
         />
       </div>
     );

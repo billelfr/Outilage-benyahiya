@@ -7,9 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/ui/Logo";
 
 const navItems = [
-  { href: "/admin", label: "Overview" },
-  { href: "/admin/products", label: "Products" },
-  { href: "/admin/orders", label: "Orders" },
+  { href: "/admin", label: "Aperçu" },
+  { href: "/admin/products", label: "Produits" },
+  { href: "/admin/orders", label: "Commandes" },
 ];
 
 export function Sidebar() {
@@ -22,23 +22,31 @@ export function Sidebar() {
       <div className="flex h-full flex-col">
         <div className="flex items-center gap-3 rounded-2xl bg-slate-950 p-4 text-white">
           <Logo size="small" priority className="!h-7 !w-14" />
+
           <div>
-            <p className="text-sm font-bold">Admin console</p>
-            <p className="text-xs text-slate-300">Operations console</p>
+            <p className="text-sm font-bold">Console admin</p>
+            <p className="text-xs text-slate-300">Console d'opérations</p>
           </div>
         </div>
 
         <div className="mt-4 rounded-2xl border border-line bg-white/70 p-4">
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-muted">Signed in</p>
+          <p className="text-xs font-bold uppercase tracking-[0.18em] text-muted">
+            Connecté
+          </p>
+
           <p className="mt-2 font-bold">{admin?.name}</p>
-          <p className="truncate text-sm text-muted">{admin?.email}</p>
+
+          <p className="truncate text-sm text-muted">
+            {admin?.email}
+          </p>
         </div>
 
         <nav className="mt-4 grid gap-2">
           {navItems.map((item) => {
             const active =
               pathname === item.href ||
-              (item.href !== "/admin" && pathname.startsWith(`${item.href}/`)) ||
+              (item.href !== "/admin" &&
+                pathname.startsWith(`${item.href}/`)) ||
               (item.href === "/admin" && pathname === "/admin");
 
             return (
@@ -58,7 +66,14 @@ export function Sidebar() {
         </nav>
 
         <div className="mt-auto grid gap-3 pt-6">
-          <Button href="/" variant="secondary" className="w-full">Back to store</Button>
+          <Button
+            href="/"
+            variant="secondary"
+            className="w-full"
+          >
+            Retour à la boutique
+          </Button>
+
           <Button
             variant="danger"
             className="w-full"
@@ -67,7 +82,7 @@ export function Sidebar() {
               router.replace("/admin/login");
             }}
           >
-            Log out
+            Déconnexion
           </Button>
         </div>
       </div>

@@ -8,7 +8,7 @@ export function SiteFooter() {
           <Logo className="h-16 w-16" />
           <div>
             <p className="text-base font-black text-foreground">{BRAND_NAME}</p>
-            <p className="mt-1 leading-6">Professional tools, equipment, and construction supplies.</p>
+            <p className="mt-1 leading-6">Outils professionnels, équipements et fournitures de construction.</p>
           </div>
         </div>
 
@@ -31,7 +31,7 @@ export function SiteFooter() {
         </address>
 
         <address className="not-italic">
-          <p className="font-black text-foreground">Store Location</p>
+          <p className="font-black text-foreground">Adresse du magasin</p>
           <a
             className="mt-3 block leading-6 hover:text-foreground"
             href="https://www.google.com/maps/place/Outillage+benyahia/@36.5417803,3.0824655,17z/data=!4m6!3m5!1s0x128f01a6d3eff275:0xb074f99702174a55!8m2!3d36.5418041!4d3.0824499!16s%2Fg%2F11lkj64fr2!18m1!1e1?entry=ttu&g_ep=EgoyMDI2MDUxNy4wIKXMDSoASAFQAw%3D%3D"
@@ -40,7 +40,7 @@ export function SiteFooter() {
           >
             Outillage General Benyahiya
             <br />
-            Alger, Algeria
+            Alger, Algérie
           </a>
         </address>
       </div>

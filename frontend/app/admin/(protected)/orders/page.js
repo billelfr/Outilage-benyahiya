@@ -26,22 +26,16 @@ export default function AdminOrdersPage() {
       try {
         const response = await fetchOrders();
 
-        if (!active) {
-          return;
-        }
+        if (!active) return;
 
         setOrders(response.map(normalizeOrder));
         setError("");
       } catch (loadError) {
-        if (!active) {
-          return;
-        }
+        if (!active) return;
 
-        setError(loadError.message || "We could not load orders.");
+        setError(loadError.message || "Impossible de charger les commandes.");
       } finally {
-        if (active) {
-          setLoading(false);
-        }
+        if (active) setLoading(false);
       }
     }
 
@@ -57,30 +51,47 @@ export default function AdminOrdersPage() {
       setUpdatingId(orderId);
       const updatedOrder = await updateOrderStatus(orderId, status);
       setOrders((currentOrders) =>
-        currentOrders.map((order) => (order.id === orderId ? normalizeOrder(updatedOrder) : order)),
+        currentOrders.map((order) =>
+          order.id === orderId ? normalizeOrder(updatedOrder) : order
+        )
       );
     } catch (updateError) {
-      setError(updateError.message || "We could not update the order status.");
+      setError(updateError.message || "Impossible de mettre à jour le statut de la commande.");
     } finally {
       setUpdatingId("");
     }
   }
 
   if (loading) {
-    return <LoadingState title="Loading orders" description="Fetching orders from MongoDB." />;
+    return (
+      <LoadingState
+        title="Chargement des commandes"
+        description="Récupération des commandes depuis MongoDB."
+      />
+    );
   }
 
   const filteredOrders =
-    statusFilter === "ALL" ? orders : orders.filter((order) => String(order.status).toUpperCase() === statusFilter);
+    statusFilter === "ALL"
+      ? orders
+      : orders.filter((order) => String(order.status).toUpperCase() === statusFilter);
+
   const statuses = ["ALL", "PENDING", "CONFIRMED", "DELIVERED"];
+
+  const statusLabels = {
+    ALL: "Tout",
+    PENDING: "En attente",
+    CONFIRMED: "Confirmée",
+    DELIVERED: "Livrée",
+  };
 
   return (
     <div className="space-y-6">
       <Card className="p-6 md:p-8">
         <SectionHeader
-          eyebrow="Orders"
-          title="Track order progress"
-          description="Click any order row to reveal delivery instructions and item-level order details."
+          eyebrow="Commandes"
+          title="Suivre l'avancement des commandes"
+          description="Cliquez sur une ligne de commande pour afficher les instructions de livraison et le détail des articles."
         />
         <div className="mt-6 flex gap-2 overflow-x-auto pb-1">
           {statuses.map((status) => (
@@ -88,12 +99,13 @@ export default function AdminOrdersPage() {
               key={status}
               type="button"
               onClick={() => setStatusFilter(status)}
-              className={`rounded-2xl px-4 py-2 text-sm font-bold transition ${statusFilter === status
+              className={`rounded-2xl px-4 py-2 text-sm font-bold transition ${
+                statusFilter === status
                   ? "bg-slate-950 text-white"
                   : "border border-line bg-white/75 text-muted-strong hover:bg-white"
-                }`}
+              }`}
             >
-              {status}
+              {statusLabels[status]}
             </button>
           ))}
         </div>
@@ -102,8 +114,8 @@ export default function AdminOrdersPage() {
 
       {orders.length === 0 ? (
         <EmptyState
-          title="No orders yet"
-          description="Guest orders will appear here as soon as customers place an order from the cart."
+          title="Aucune commande pour l'instant"
+          description="Les commandes des clients apparaîtront ici dès qu'une commande sera passée depuis le panier."
         />
       ) : (
         <Card className="overflow-hidden">
@@ -111,13 +123,13 @@ export default function AdminOrdersPage() {
             <table className="w-full table-fixed text-sm">
               <thead>
                 <tr>
-                  <th className="px-2 py-3">Order ID</th>
-                  <th className="px-2 py-3">Customer</th>
-                  <th className="px-2 py-3">Phone</th>
-                  <th className="px-2 py-3">Items</th>
+                  <th className="px-2 py-3">N° commande</th>
+                  <th className="px-2 py-3">Client</th>
+                  <th className="px-2 py-3">Téléphone</th>
+                  <th className="px-2 py-3">Articles</th>
                   <th className="px-2 py-3">Total</th>
-                  <th className="px-2 py-3">Placed</th>
-                  <th className="px-2 py-3">Status</th>
+                  <th className="px-2 py-3">Date</th>
+                  <th className="px-2 py-3">Statut</th>
                 </tr>
               </thead>
 
@@ -129,9 +141,7 @@ export default function AdminOrdersPage() {
                     <Fragment key={order.id}>
                       <tr
                         className="align-top border-t cursor-pointer hover:bg-slate-50"
-                        onClick={() =>
-                          setSelectedOrderId(expanded ? "" : order.id)
-                        }
+                        onClick={() => setSelectedOrderId(expanded ? "" : order.id)}
                         role="button"
                       >
                         <td className="px-2 py-3 font-bold break-words">
@@ -141,7 +151,7 @@ export default function AdminOrdersPage() {
                         <td className="px-2 py-3 break-words">
                           <p className="font-bold">{order.customerName}</p>
                           <p className="text-muted break-all">
-                            {order.customerEmail || "No email provided"}
+                            {order.customerEmail || "Aucun e-mail fourni"}
                           </p>
                           <p className="mt-1 text-xs text-muted break-words">
                             {order.address}
@@ -149,7 +159,7 @@ export default function AdminOrdersPage() {
                         </td>
 
                         <td className="px-2 py-3 break-all">
-                          {order.customerPhone || "No phone"}
+                          {order.customerPhone || "Aucun téléphone"}
                         </td>
 
                         <td className="px-2 py-3 text-center">{order.items.length}</td>
@@ -168,9 +178,7 @@ export default function AdminOrdersPage() {
                             <OrderStatusForm
                               value={order.status}
                               updating={updatingId === order.id}
-                              onChange={(status) =>
-                                handleStatusChange(order.id, status)
-                              }
+                              onChange={(status) => handleStatusChange(order.id, status)}
                             />
                           </div>
                         </td>
@@ -181,33 +189,29 @@ export default function AdminOrdersPage() {
                           <td colSpan={7} className="px-2 py-4">
                             <div className="space-y-6 rounded-2xl border border-line bg-white/90 p-4 shadow-sm">
                               <div className="space-y-2">
-                                <p className="text-sm font-semibold">Delivery instructions</p>
+                                <p className="text-sm font-semibold">Instructions de livraison</p>
                                 <p className="text-sm text-muted">
-                                  {order.description || "No additional description provided."}
+                                  {order.description || "Aucune description supplémentaire fournie."}
                                 </p>
                               </div>
 
                               <div className="space-y-3">
-                                <p className="text-sm font-semibold">Items</p>
+                                <p className="text-sm font-semibold">Articles</p>
                                 <div className="overflow-x-auto rounded-2xl border border-line">
                                   <table className="min-w-full text-sm">
                                     <thead>
                                       <tr>
-                                        <th className="px-3 py-2 text-left">Product</th>
-                                        <th className="px-3 py-2 text-center">Qty</th>
-                                        <th className="px-3 py-2 text-right">Unit price</th>
-                                        <th className="px-3 py-2 text-right">Subtotal</th>
+                                        <th className="px-3 py-2 text-left">Produit</th>
+                                        <th className="px-3 py-2 text-center">Qté</th>
+                                        <th className="px-3 py-2 text-right">Prix unitaire</th>
+                                        <th className="px-3 py-2 text-right">Sous-total</th>
                                       </tr>
                                     </thead>
                                     <tbody>
                                       {order.items.map((item) => (
                                         <tr key={item.id || item.name} className="border-t border-line">
-                                          <td className="px-3 py-2">
-                                            {item.name}
-                                          </td>
-                                          <td className="px-3 py-2 text-center">
-                                            {item.quantity}
-                                          </td>
+                                          <td className="px-3 py-2">{item.name}</td>
+                                          <td className="px-3 py-2 text-center">{item.quantity}</td>
                                           <td className="px-3 py-2 text-right">
                                             {formatCurrency(item.price)}
                                           </td>
@@ -233,7 +237,7 @@ export default function AdminOrdersPage() {
 
           {filteredOrders.length === 0 ? (
             <div className="border-t border-line p-8 text-center text-sm text-muted">
-              No orders match this filter.
+              Aucune commande ne correspond à ce filtre.
             </div>
           ) : null}
         </Card>

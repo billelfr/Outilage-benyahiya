@@ -28,22 +28,16 @@ export default function ProductDetailsPage() {
       try {
         const response = await fetchProduct(params.id);
 
-        if (!active) {
-          return;
-        }
+        if (!active) return;
 
         setProduct(normalizeProduct(response));
         setError("");
       } catch (loadError) {
-        if (!active) {
-          return;
-        }
+        if (!active) return;
 
-        setError(getErrorMessage(loadError, "We could not load this product."));
+        setError(getErrorMessage(loadError, "Impossible de charger ce produit."));
       } finally {
-        if (active) {
-          setLoading(false);
-        }
+        if (active) setLoading(false);
       }
     }
 
@@ -59,7 +53,10 @@ export default function ProductDetailsPage() {
   if (loading) {
     return (
       <div className="page-shell py-12">
-        <LoadingState title="Loading product" description="Fetching product details from the API." />
+        <LoadingState
+          title="Chargement du produit"
+          description="Récupération des détails du produit depuis l'API."
+        />
       </div>
     );
   }
@@ -68,10 +65,10 @@ export default function ProductDetailsPage() {
     return (
       <div className="page-shell py-12">
         <EmptyState
-          title="Product unavailable"
-          description={error || "This product could not be found."}
+          title="Produit indisponible"
+          description={error || "Ce produit est introuvable."}
           actionHref="/"
-          actionLabel="Back to shop"
+          actionLabel="Retour à la boutique"
         />
       </div>
     );
@@ -86,7 +83,7 @@ export default function ProductDetailsPage() {
           size="sm"
           className="gap-2"
         >
-          ← Back to Shop
+          ← Retour à la boutique
         </Button>
       </div>
 
@@ -113,14 +110,18 @@ export default function ProductDetailsPage() {
             </p>
             {!product.inStock && (
               <span className="bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold">
-                Out of Stock
+                Rupture de stock
               </span>
             )}
           </div>
+
           {product.reference && (
-            <p className="mt-2 text-xs text-muted font-mono">Ref: {product.reference}</p>
+            <p className="mt-2 text-xs text-muted font-mono">Réf : {product.reference}</p>
           )}
-          <h1 className="mt-4 text-4xl font-bold leading-none tracking-tight md:text-6xl">{product.name}</h1>
+
+          <h1 className="mt-4 text-4xl font-bold leading-none tracking-tight md:text-6xl">
+            {product.name}
+          </h1>
           <p className="mt-5 text-base leading-7 text-muted">{product.description}</p>
           <p className="mt-8 text-4xl font-bold tracking-tight">{formatCurrency(product.price)}</p>
 
@@ -128,7 +129,7 @@ export default function ProductDetailsPage() {
             {product.inStock ? (
               <>
                 <label className="flex min-h-14 items-center justify-between rounded-2xl border border-line bg-white/80 px-4 sm:min-w-40">
-                  <span className="text-sm font-bold text-muted-strong">Quantity</span>
+                  <span className="text-sm font-bold text-muted-strong">Quantité</span>
                   <input
                     type="number"
                     min="1"
@@ -138,24 +139,24 @@ export default function ProductDetailsPage() {
                   />
                 </label>
                 <Button onClick={() => addItem(product, quantity)} size="lg" className="sm:flex-1">
-                  Add to cart
+                  Ajouter au panier
                 </Button>
               </>
             ) : (
               <Button disabled size="lg" className="sm:flex-1">
-                Out of Stock
+                Rupture de stock
               </Button>
             )}
           </div>
 
           <div className="mt-8 grid gap-3 text-sm text-muted md:grid-cols-2">
             <div className="rounded-2xl border border-line bg-white/70 p-4">
-              <p className="text-xs font-bold uppercase tracking-[0.18em]">Guest ordering</p>
-              <p className="mt-2 leading-6">No customer account or card details are required to place an order.</p>
+              <p className="text-xs font-bold uppercase tracking-[0.18em]">Commande sans compte</p>
+              <p className="mt-2 leading-6">Aucun compte client ni coordonnées bancaires ne sont requis pour passer une commande.</p>
             </div>
             <div className="rounded-2xl border border-line bg-white/70 p-4">
-              <p className="text-xs font-bold uppercase tracking-[0.18em]">Local cart storage</p>
-              <p className="mt-2 leading-6">Items stay in the browser until order placement or manual removal.</p>
+              <p className="text-xs font-bold uppercase tracking-[0.18em]">Panier local</p>
+              <p className="mt-2 leading-6">Les articles restent dans le navigateur jusqu'à la validation de la commande ou leur suppression manuelle.</p>
             </div>
           </div>
         </Card>

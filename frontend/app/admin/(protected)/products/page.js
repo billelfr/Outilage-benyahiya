@@ -5,7 +5,11 @@ import Link from "next/link";
 import { useDeferredValue, useEffect, useState } from "react";
 import { EmptyState } from "@/components/empty-state";
 import { LoadingState } from "@/components/loading-state";
-import { deleteAdminProduct, fetchAdminProducts, getErrorMessage } from "@/lib/api";
+import {
+  deleteAdminProduct,
+  fetchAdminProducts,
+  getErrorMessage,
+} from "@/lib/api";
 import { formatCurrency, formatCategory } from "@/lib/format";
 import { normalizeProduct } from "@/lib/normalize";
 import { Button } from "@/components/ui/button";
@@ -15,7 +19,7 @@ const CATEGORIES = [
   { value: "OUTILLAGE_ELECTRIQUE", label: "Outillage électrique" },
   { value: "OUTILLAGE_SANS_FIL", label: "Outillage sans fil" },
   { value: "OUTILLAGE_A_MAIN", label: "Outillage à main" },
-  { value: "PIECE_ACCESSOIRES", label: "Pièce & accessoires" },
+  { value: "PIECE_ACCESSOIRES", label: "Pièces & accessoires" },
   { value: "QUINCAILLERIE_CONSOMMABLES", label: "Quincaillerie & consommables" },
   { value: "ELECTRICITE_LUMIERE", label: "Électricité & lumière" },
   { value: "PLOMBERIE", label: "Plomberie" },
@@ -31,6 +35,7 @@ export default function AdminProductsPage() {
   const [error, setError] = useState("");
   const [deletingId, setDeletingId] = useState("");
   const [showFilters, setShowFilters] = useState(false);
+
   const deferredSearch = useDeferredValue(search);
   const deferredCategory = useDeferredValue(selectedCategory);
   const deferredMinPrice = useDeferredValue(minPrice);
@@ -54,7 +59,12 @@ export default function AdminProductsPage() {
           return;
         }
 
-        setError(getErrorMessage(loadError, "We could not load the product list."));
+        setError(
+          getErrorMessage(
+            loadError,
+            "Nous n'avons pas pu charger la liste des produits."
+          )
+        );
       } finally {
         if (active) {
           setLoading(false);
@@ -71,12 +81,21 @@ export default function AdminProductsPage() {
 
   const filteredProducts = products.filter((product) => {
     const query = deferredSearch.trim().toLowerCase();
-    const minPriceNum = deferredMinPrice ? parseFloat(deferredMinPrice) : 0;
-    const maxPriceNum = deferredMaxPrice ? parseFloat(deferredMaxPrice) : Infinity;
 
-    // Search filter
+    const minPriceNum = deferredMinPrice
+      ? parseFloat(deferredMinPrice)
+      : 0;
+
+    const maxPriceNum = deferredMaxPrice
+      ? parseFloat(deferredMaxPrice)
+      : Infinity;
+
     if (query) {
-      const searchFields = [product.name, product.category, product.description]
+      const searchFields = [
+        product.name,
+        product.category,
+        product.description,
+      ]
         .filter(Boolean)
         .join(" ")
         .toLowerCase();
@@ -86,12 +105,10 @@ export default function AdminProductsPage() {
       }
     }
 
-    // Category filter
     if (deferredCategory && product.category !== deferredCategory) {
       return false;
     }
 
-    // Price filter
     if (product.price < minPriceNum || product.price > maxPriceNum) {
       return false;
     }
@@ -99,7 +116,11 @@ export default function AdminProductsPage() {
     return true;
   });
 
-  const hasActiveFilters = deferredSearch || deferredCategory || deferredMinPrice || deferredMaxPrice;
+  const hasActiveFilters =
+    deferredSearch ||
+    deferredCategory ||
+    deferredMinPrice ||
+    deferredMaxPrice;
 
   function handleClearFilters() {
     setSearch("");
@@ -111,17 +132,31 @@ export default function AdminProductsPage() {
   async function handleDelete(productId) {
     try {
       setDeletingId(productId);
+
       await deleteAdminProduct(productId);
-      setProducts((currentProducts) => currentProducts.filter((product) => product.id !== productId));
+
+      setProducts((currentProducts) =>
+        currentProducts.filter((product) => product.id !== productId)
+      );
     } catch (deleteError) {
-      setError(getErrorMessage(deleteError, "We could not delete this product."));
+      setError(
+        getErrorMessage(
+          deleteError,
+          "Nous n'avons pas pu supprimer ce produit."
+        )
+      );
     } finally {
       setDeletingId("");
     }
   }
 
   if (loading) {
-    return <LoadingState title="Loading products" description="Fetching products for admin management." />;
+    return (
+      <LoadingState
+        title="Chargement des produits"
+        description="Récupération des produits pour la gestion administrateur."
+      />
+    );
   }
 
   return (
@@ -130,16 +165,21 @@ export default function AdminProductsPage() {
       <Card className="p-6 md:p-8">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-bold">Products</h2>
-            <p className="text-muted mt-1">Manage your product inventory</p>
+            <h2 className="text-2xl font-bold">Produits</h2>
+
+            <p className="text-muted mt-1">
+              Gérez votre inventaire de produits
+            </p>
           </div>
-          <Button href="/admin/products/new">Add Product</Button>
+
+          <Button href="/admin/products/new">
+            Ajouter un produit
+          </Button>
         </div>
       </Card>
 
       {/* Search and Filter Bar */}
       <Card className="p-4 md:p-6">
-        {/* Search Bar with Category, Search Input, Filter and Search Button */}
         <div className="rounded-[1.75rem] border border-line bg-white/90 p-2 shadow-[0_24px_70px_rgba(22,22,22,0.12)] backdrop-blur flex items-center gap-2">
           {/* Category Dropdown */}
           <select
@@ -147,7 +187,8 @@ export default function AdminProductsPage() {
             onChange={(event) => setSelectedCategory(event.target.value)}
             className="px-3 py-2 min-h-12 rounded-[1.25rem] border border-line bg-white text-foreground outline-none focus:border-accent-strong text-xs sm:text-sm font-semibold"
           >
-            <option value="">Category</option>
+            <option value="">Catégorie</option>
+
             {CATEGORIES.map((cat) => (
               <option key={cat.value} value={cat.value}>
                 {cat.label}
@@ -160,7 +201,7 @@ export default function AdminProductsPage() {
             type="search"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
-            placeholder="Search products..."
+            placeholder="Rechercher des produits..."
             className="min-h-12 flex-1 rounded-[1.25rem] border-0 bg-transparent px-4 text-sm font-semibold text-foreground outline-none placeholder:text-muted"
           />
 
@@ -168,29 +209,33 @@ export default function AdminProductsPage() {
           <button
             onClick={() => setShowFilters(!showFilters)}
             className="px-4 py-2 min-h-12 rounded-[1.25rem] border border-line hover:bg-white/50 text-foreground font-semibold transition-colors"
-            title={showFilters ? "Hide filters" : "Show filters"}
+            title={showFilters ? "Masquer les filtres" : "Afficher les filtres"}
           >
             ⚙️
           </button>
 
           {/* Search Button */}
-          <button
-            className="mr-2 px-6 py-2 min-h-12 rounded-[1.25rem] bg-accent-strong hover:bg-accent-strong/90 text-white font-semibold transition-colors text-sm"
-          >
-            Search
+          <button className="mr-2 px-6 py-2 min-h-12 rounded-[1.25rem] bg-accent-strong hover:bg-accent-strong/90 text-white font-semibold transition-colors text-sm">
+            Rechercher
           </button>
         </div>
 
         {/* Price Filter Panel */}
         {showFilters && (
           <div className="rounded-xl border border-line bg-white/90 p-4 space-y-4 backdrop-blur mt-4">
-            <p className="text-sm font-semibold text-muted-strong">Price Range</p>
-            {/* Price Filter */}
+            <p className="text-sm font-semibold text-muted-strong">
+              Fourchette de prix
+            </p>
+
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label htmlFor="min-price-admin" className="block text-xs font-semibold text-muted-strong mb-2">
-                  Min Price (DA)
+                <label
+                  htmlFor="min-price-admin"
+                  className="block text-xs font-semibold text-muted-strong mb-2"
+                >
+                  Prix minimum (DA)
                 </label>
+
                 <input
                   id="min-price-admin"
                   type="number"
@@ -202,10 +247,15 @@ export default function AdminProductsPage() {
                   className="w-full px-4 py-2 rounded-lg border border-line bg-white text-foreground outline-none focus:border-accent-strong text-sm"
                 />
               </div>
+
               <div>
-                <label htmlFor="max-price-admin" className="block text-xs font-semibold text-muted-strong mb-2">
-                  Max Price (DA)
+                <label
+                  htmlFor="max-price-admin"
+                  className="block text-xs font-semibold text-muted-strong mb-2"
+                >
+                  Prix maximum (DA)
                 </label>
+
                 <input
                   id="max-price-admin"
                   type="number"
@@ -219,14 +269,13 @@ export default function AdminProductsPage() {
               </div>
             </div>
 
-            {/* Clear Filters Button */}
             {hasActiveFilters && (
               <div className="pt-2 border-t border-line">
                 <button
                   onClick={handleClearFilters}
                   className="w-full px-4 py-2 rounded-lg bg-danger/10 hover:bg-danger/20 text-danger font-semibold text-sm transition-colors"
                 >
-                  Clear Filters
+                  Effacer les filtres
                 </button>
               </div>
             )}
@@ -236,8 +285,15 @@ export default function AdminProductsPage() {
         {/* Results Info */}
         {hasActiveFilters && (
           <div className="mt-3 text-sm text-muted-strong">
-            Showing <span className="font-semibold text-foreground">{filteredProducts.length}</span> of{" "}
-            <span className="font-semibold text-foreground">{products.length}</span> products
+            Affichage de{" "}
+            <span className="font-semibold text-foreground">
+              {filteredProducts.length}
+            </span>{" "}
+            sur{" "}
+            <span className="font-semibold text-foreground">
+              {products.length}
+            </span>{" "}
+            produits
           </div>
         )}
       </Card>
@@ -252,15 +308,20 @@ export default function AdminProductsPage() {
       {/* Products Table or Empty State */}
       {filteredProducts.length === 0 && !hasActiveFilters ? (
         <EmptyState
-          title="No products yet"
-          description="Create your first product to start building the catalog."
+          title="Aucun produit pour le moment"
+          description="Créez votre premier produit pour commencer à construire le catalogue."
           actionHref="/admin/products/new"
-          actionLabel="Create product"
+          actionLabel="Créer un produit"
         />
       ) : filteredProducts.length === 0 && hasActiveFilters ? (
         <Card className="p-8 text-center">
-          <p className="text-muted-strong font-semibold">No products match your filters</p>
-          <p className="text-muted text-sm mt-1">Try adjusting your search or filter criteria</p>
+          <p className="text-muted-strong font-semibold">
+            Aucun produit ne correspond à vos filtres
+          </p>
+
+          <p className="text-muted text-sm mt-1">
+            Essayez de modifier vos critères de recherche ou de filtrage
+          </p>
         </Card>
       ) : (
         <Card className="overflow-hidden">
@@ -268,18 +329,42 @@ export default function AdminProductsPage() {
             <table className="w-full">
               <thead className="bg-slate-50 border-b border-line">
                 <tr>
-                  <th className="px-5 py-4 text-left text-xs font-bold uppercase tracking-wider text-muted-strong">Product</th>
-                  <th className="px-5 py-4 text-left text-xs font-bold uppercase tracking-wider text-muted-strong">Reference</th>
-                  <th className="px-5 py-4 text-left text-xs font-bold uppercase tracking-wider text-muted-strong">Category</th>
-                  <th className="px-5 py-4 text-left text-xs font-bold uppercase tracking-wider text-muted-strong">Price</th>
-                  <th className="px-5 py-4 text-left text-xs font-bold uppercase tracking-wider text-muted-strong">Available</th>
-                  <th className="px-5 py-4 text-left text-xs font-bold uppercase tracking-wider text-muted-strong">Flags</th>
-                  <th className="px-5 py-4 text-left text-xs font-bold uppercase tracking-wider text-muted-strong">Actions</th>
+                  <th className="px-5 py-4 text-left text-xs font-bold uppercase tracking-wider text-muted-strong">
+                    Produit
+                  </th>
+
+                  <th className="px-5 py-4 text-left text-xs font-bold uppercase tracking-wider text-muted-strong">
+                    Référence
+                  </th>
+
+                  <th className="px-5 py-4 text-left text-xs font-bold uppercase tracking-wider text-muted-strong">
+                    Catégorie
+                  </th>
+
+                  <th className="px-5 py-4 text-left text-xs font-bold uppercase tracking-wider text-muted-strong">
+                    Prix
+                  </th>
+
+                  <th className="px-5 py-4 text-left text-xs font-bold uppercase tracking-wider text-muted-strong">
+                    Disponible
+                  </th>
+
+                  <th className="px-5 py-4 text-left text-xs font-bold uppercase tracking-wider text-muted-strong">
+                    Badges
+                  </th>
+
+                  <th className="px-5 py-4 text-left text-xs font-bold uppercase tracking-wider text-muted-strong">
+                    Actions
+                  </th>
                 </tr>
               </thead>
+
               <tbody className="divide-y divide-line">
                 {filteredProducts.map((product) => (
-                  <tr key={product.id} className="hover:bg-slate-50 transition-colors">
+                  <tr
+                    key={product.id}
+                    className="hover:bg-slate-50 transition-colors"
+                  >
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-3">
                         <div className="relative h-12 w-12 overflow-hidden rounded-lg bg-slate-100 flex-shrink-0">
@@ -294,30 +379,47 @@ export default function AdminProductsPage() {
                             className="object-cover"
                           />
                         </div>
+
                         <div className="min-w-0">
-                          <p className="font-semibold text-sm text-foreground truncate">{product.name}</p>
+                          <p className="font-semibold text-sm text-foreground truncate">
+                            {product.name}
+                          </p>
                         </div>
                       </div>
                     </td>
+
                     <td className="px-5 py-4">
-                      <span className="text-sm text-foreground font-mono">{product.reference || "-"}</span>
+                      <span className="text-sm text-foreground font-mono">
+                        {product.reference || "-"}
+                      </span>
                     </td>
+
                     <td className="px-5 py-4">
-                      <span className="text-sm text-foreground">{formatCategory(product.category)}</span>
+                      <span className="text-sm text-foreground">
+                        {formatCategory(product.category)}
+                      </span>
                     </td>
+
                     <td className="px-5 py-4">
-                      <span className="font-bold text-sm text-foreground">{formatCurrency(product.price)}</span>
+                      <span className="font-bold text-sm text-foreground">
+                        {formatCurrency(product.price)}
+                      </span>
                     </td>
+
                     <td className="px-5 py-4">
-                      <span className="text-sm text-foreground font-medium">{product.inStock ? 'Yes' : 'No'}</span>
+                      <span className="text-sm text-foreground font-medium">
+                        {product.inStock ? "Oui" : "Non"}
+                      </span>
                     </td>
+
                     <td className="px-5 py-4">
                       <div className="flex flex-wrap gap-1">
                         {product.isNouvellite && (
                           <span className="text-xs font-bold px-2 py-1 rounded-full bg-blue-100 text-blue-700">
-                            New
+                            Nouveau
                           </span>
                         )}
+
                         {product.isPromotion && (
                           <span className="text-xs font-bold px-2 py-1 rounded-full bg-red-100 text-red-700">
                             Promo
@@ -325,6 +427,7 @@ export default function AdminProductsPage() {
                         )}
                       </div>
                     </td>
+
                     <td className="px-5 py-4">
                       <div className="flex gap-2">
                         <Button
@@ -333,8 +436,9 @@ export default function AdminProductsPage() {
                           size="sm"
                           className="text-xs"
                         >
-                          Edit
+                          Modifier
                         </Button>
+
                         <Button
                           onClick={() => handleDelete(product.id)}
                           disabled={deletingId === product.id}
@@ -342,7 +446,9 @@ export default function AdminProductsPage() {
                           size="sm"
                           className="text-xs"
                         >
-                          {deletingId === product.id ? "..." : "Delete"}
+                          {deletingId === product.id
+                            ? "..."
+                            : "Supprimer"}
                         </Button>
                       </div>
                     </td>

@@ -8,7 +8,10 @@ export default function AdminLoginPage() {
       <Suspense
         fallback={
           <div className="w-full max-w-lg">
-            <LoadingState title="Loading login" description="Preparing the admin sign-in form." />
+            <LoadingState
+              title="Chargement de la connexion"
+              description="Préparation du formulaire de connexion administrateur."
+            />
           </div>
         }
       >

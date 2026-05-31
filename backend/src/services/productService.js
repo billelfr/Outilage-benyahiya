@@ -1,16 +1,37 @@
 const prisma = require("../lib/prisma");
+const cache = require("../lib/cache");
 const { createHttpError } = require("../lib/http");
 const { deleteCloudinaryImage } = require("../lib/cloudinaryUtils");
 
+const PRODUCTS_CACHE_KEY = "products:all";
+const PRODUCT_CACHE_PREFIX = "products:detail";
+
 async function getProducts() {
-  return prisma.product.findMany({
+  const cachedProducts = await cache.getJson(PRODUCTS_CACHE_KEY);
+
+  if (cachedProducts) {
+    return cachedProducts;
+  }
+
+  const products = await prisma.product.findMany({
     orderBy: {
       createdAt: "desc"
     }
   });
+
+  await cache.setJson(PRODUCTS_CACHE_KEY, products);
+
+  return products;
 }
 
 async function getProductById(reference) {
+  const cacheKey = `${PRODUCT_CACHE_PREFIX}:${reference}`;
+  const cachedProduct = await cache.getJson(cacheKey);
+
+  if (cachedProduct) {
+    return cachedProduct;
+  }
+
   const product = await prisma.product.findUnique({
     where: { reference }
   });
@@ -19,7 +40,17 @@ async function getProductById(reference) {
     throw createHttpError(404, "Product not found");
   }
 
+  await cache.setJson(cacheKey, product);
+
   return product;
+}
+
+async function clearProductCache(reference) {
+  await cache.deleteByPattern(PRODUCTS_CACHE_KEY);
+
+  if (reference) {
+    await cache.deleteByPattern(`${PRODUCT_CACHE_PREFIX}:${reference}`);
+  }
 }
 
 async function createProduct(data) {
@@ -31,7 +62,7 @@ async function createProduct(data) {
     throw createHttpError(400, "Product reference (SKU) is required and must be unique");
   }
 
-  return prisma.product.create({
+  const product = await prisma.product.create({
     data: {
       reference: data.reference.trim(),
       name: data.name,
@@ -44,6 +75,10 @@ async function createProduct(data) {
       isPromotion: data.isPromotion ?? false,
     }
   });
+
+  await clearProductCache(product.reference);
+
+  return product;
 }
 
 async function updateProduct(reference, data) {
@@ -54,7 +89,7 @@ async function updateProduct(reference, data) {
     await deleteCloudinaryImage(existingProduct.imageUrl);
   }
 
-  return prisma.product.update({
+  const product = await prisma.product.update({
     where: { reference },
     data: {
       name: data.name,
@@ -67,6 +102,10 @@ async function updateProduct(reference, data) {
       isPromotion: data.isPromotion,
     }
   });
+
+  await clearProductCache(reference);
+
+  return product;
 }
 
 async function deleteProduct(reference) {
@@ -77,9 +116,13 @@ async function deleteProduct(reference) {
     await deleteCloudinaryImage(product.imageUrl);
   }
 
-  return prisma.product.delete({
+  const deletedProduct = await prisma.product.delete({
     where: { reference }
   });
+
+  await clearProductCache(reference);
+
+  return deletedProduct;
 }
 
 module.exports = {

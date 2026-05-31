@@ -8,6 +8,7 @@ Minimal production-ready backend using Express, Prisma, and MongoDB.
 - Express.js
 - Prisma ORM
 - MongoDB
+- Redis
 - dotenv
 - cors
 
@@ -58,13 +59,23 @@ cp .env.example .env
 
 3. Update `MONGODB_URI` in `.env` to match your MongoDB database.
 
-4. Generate the Prisma client:
+4. Configure Redis caching in `.env`:
+
+```bash
+REDIS_URL="redis://localhost:6379"
+REDIS_TTL_SECONDS=60
+REDIS_ENABLED=true
+```
+
+The product catalog and product detail endpoints use Redis as an optional cache. If Redis is unavailable, the API falls back to MongoDB.
+
+5. Generate the Prisma client:
 
 ```bash
 npm run prisma:generate
 ```
 
-5. Apply the schema to the database:
+6. Apply the schema to the database:
 
 ```bash
 npm run prisma:push

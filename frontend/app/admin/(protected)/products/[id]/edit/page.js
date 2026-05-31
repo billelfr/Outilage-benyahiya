@@ -23,22 +23,16 @@ export default function EditProductPage() {
       try {
         const response = await fetchProduct(params.id);
 
-        if (!active) {
-          return;
-        }
+        if (!active) return;
 
         setProduct(normalizeProduct(response));
         setError("");
       } catch (loadError) {
-        if (!active) {
-          return;
-        }
+        if (!active) return;
 
-        setError(getErrorMessage(loadError, "We could not load this product."));
+        setError(getErrorMessage(loadError, "Impossible de charger ce produit."));
       } finally {
-        if (active) {
-          setLoading(false);
-        }
+        if (active) setLoading(false);
       }
     }
 
@@ -58,23 +52,28 @@ export default function EditProductPage() {
       await updateAdminProduct(params.id, values);
       router.replace("/admin/products");
     } catch (submitError) {
-      setError(getErrorMessage(submitError, "We could not update the product."));
+      setError(getErrorMessage(submitError, "Impossible de mettre à jour le produit."));
     } finally {
       setSubmitting(false);
     }
   }
 
   if (loading) {
-    return <LoadingState title="Loading product" description="Preparing the edit form." />;
+    return (
+      <LoadingState
+        title="Chargement du produit"
+        description="Préparation du formulaire de modification."
+      />
+    );
   }
 
   return (
     <div className="space-y-6">
       <Card className="p-6 md:p-8">
         <SectionHeader
-          eyebrow="Products"
-          title="Edit product"
-          description="Update storefront details while preserving the existing product record."
+          eyebrow="Produits"
+          title="Modifier le produit"
+          description="Mettez à jour les informations de la boutique tout en conservant l'enregistrement existant du produit."
         />
         {error ? <p className="mt-4 text-sm font-medium text-danger">{error}</p> : null}
       </Card>
@@ -93,7 +92,7 @@ export default function EditProductPage() {
             description: product.description,
             featured: product.featured,
           }}
-          submitLabel="Save changes"
+          submitLabel="Enregistrer les modifications"
           onSubmit={handleSubmit}
           submitting={submitting}
           errorMessage={error}
