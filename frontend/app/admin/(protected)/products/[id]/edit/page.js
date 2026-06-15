@@ -4,7 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ProductForm } from "@/components/admin/product-form";
 import { LoadingState } from "@/components/loading-state";
-import { fetchProduct, getErrorMessage, updateAdminProduct } from "@/lib/adminApi";
+import { fetchAdminProducts, getErrorMessage, updateAdminProduct } from "@/lib/adminApi";
 import { normalizeProduct } from "@/lib/normalize";
 import { Card, SectionHeader } from "@/components/ui/card";
 
@@ -21,7 +21,7 @@ export default function EditProductPage() {
 
     async function loadProduct() {
       try {
-        const response = await fetchProduct(params.id);
+        const response = await fetchAdminProducts(params.id);
 
         if (!active) return;
 
