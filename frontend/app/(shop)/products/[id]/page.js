@@ -18,6 +18,7 @@ export default function ProductDetailsPage() {
   const { addItem } = useCart();
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
+  const hasPromotionPrice = product?.isPromotion && product?.promotionPrice > 0;
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -123,7 +124,22 @@ export default function ProductDetailsPage() {
             {product.name}
           </h1>
           <p className="mt-5 text-base leading-7 text-muted">{product.description}</p>
-          <p className="mt-8 text-4xl font-bold tracking-tight">{formatCurrency(product.price)}</p>
+          <div className="mt-8 flex flex-wrap items-baseline gap-x-3 gap-y-2">
+            {hasPromotionPrice ? (
+              <>
+                <span className="text-2xl font-black text-red-600 line-through decoration-2">
+                  {formatCurrency(product.originalPrice)}
+                </span>
+                <span className="text-4xl font-black tracking-tight text-slate-950">
+                  {formatCurrency(product.promotionPrice)}
+                </span>
+              </>
+            ) : (
+              <span className="text-4xl font-bold tracking-tight">
+                {formatCurrency(product.price)}
+              </span>
+            )}
+          </div>
 
           <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
             {product.inStock ? (

@@ -83,7 +83,8 @@ export default function EditProductPage() {
           initialValues={{
             name: product.name,
             category: product.category,
-            price: product.price,
+            price: product.originalPrice,
+            promotionPrice: product.promotionPrice,
             reference: product.reference,
             image: product.image,
             isAvailable: product.inStock,

@@ -25,6 +25,7 @@ const createProduct = asyncHandler(async (req, res) => {
   const payload = {
     ...body,
     price: body.price !== undefined ? Number(body.price) : body.price,
+    promotionPrice: body.promotionPrice ? Number(body.promotionPrice) : null,
     isAvailable: body.isAvailable === "true" ? true : body.isAvailable === "false" ? false : true,
     isNouvellite: body.isNouvellite === "true" ? true : false,
     isPromotion: body.isPromotion === "true" ? true : false,
@@ -46,6 +47,7 @@ const updateProduct = asyncHandler(async (req, res) => {
   const payload = {
     ...body,
     price: body.price !== undefined ? Number(body.price) : body.price,
+    promotionPrice: body.promotionPrice ? Number(body.promotionPrice) : null,
     isAvailable: body.isAvailable === "true" ? true : body.isAvailable === "false" ? false : body.isAvailable,
     isNouvellite: body.isNouvellite === "true" ? true : body.isNouvellite === "false" ? false : body.isNouvellite,
     isPromotion: body.isPromotion === "true" ? true : body.isPromotion === "false" ? false : body.isPromotion,

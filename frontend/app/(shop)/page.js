@@ -8,7 +8,7 @@ import { LoadingState } from "@/components/loading-state";
 import { ProductCard } from "@/components/product-card";
 import { fetchProducts, getErrorMessage } from "@/lib/api";
 import { normalizeProduct } from "@/lib/normalize";
-import { PRODUCT_CATEGORIES } from "@/lib/product-categories";
+import { PRODUCT_CATEGORIES, productMatchesCategory } from "@/lib/product-categories";
 import { SectionHeader } from "@/components/ui/card";
 
 const CATEGORIES = PRODUCT_CATEGORIES;
@@ -68,16 +68,7 @@ export default function HomePage() {
       if (!searchFields.includes(query)) return false;
     }
 
-    if (deferredCategory === "NOUVEAUTE" && !product.isNouvellite) return false;
-
-    if (deferredCategory === "PROMOTION" && !product.isPromotion) return false;
-
-    if (
-      deferredCategory &&
-      deferredCategory !== "NOUVEAUTE" &&
-      deferredCategory !== "PROMOTION" &&
-      product.category !== deferredCategory
-    ) {
+    if (deferredCategory && !productMatchesCategory(product, deferredCategory)) {
       return false;
     }
 
@@ -96,7 +87,7 @@ export default function HomePage() {
   }
 
   function getCategoryCount(categoryValue) {
-    return products.filter((product) => product.category === categoryValue).length;
+    return products.filter((product) => productMatchesCategory(product, categoryValue)).length;
   }
 
   return (
@@ -125,6 +116,9 @@ export default function HomePage() {
                 src={category.image}
                 alt={category.label}
                 fill
+                priority
+                loading="eager"
+                fetchPriority="high"
                 sizes="(min-width: 640px) 320px, 78vw"
                 className="object-cover transition duration-700 group-hover:scale-[1.05]"
               />
@@ -136,10 +130,7 @@ export default function HomePage() {
                 <p className="max-w-[15rem] text-xl font-black leading-tight tracking-tight">
                   {category.label}
                 </p>
-                <p className="mt-2 line-clamp-2 text-sm font-semibold leading-5 text-white/85">
-                  {category.description}
-                </p>
-                <span className="mt-4 inline-flex min-h-11 items-center rounded-xl bg-accent-strong px-4 text-sm font-black text-slate-950 shadow-sm transition group-hover:bg-[#eab308]">
+                <span className="mt-3 inline-flex min-h-11 items-center rounded-xl bg-accent-strong px-4 text-sm font-black text-slate-950 shadow-sm transition group-hover:bg-[#eab308]">
                   Voir la catégorie
                 </span>
               </div>

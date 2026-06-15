@@ -115,6 +115,7 @@ export async function createAdminProduct(payload) {
     form.append("description", payload.description || "");
     form.append("category", payload.category || "");
     form.append("price", payload.price);
+    form.append("promotionPrice", payload.promotionPrice || "");
     form.append("isAvailable", payload.isAvailable ?? true);
     form.append("isNouvellite", payload.isNouvellite ?? false);
     form.append("isPromotion", payload.isPromotion ?? false);
@@ -136,6 +137,7 @@ export async function updateAdminProduct(reference, payload) {
     form.append("description", payload.description || "");
     form.append("category", payload.category || "");
     form.append("price", payload.price);
+    form.append("promotionPrice", payload.promotionPrice || "");
     form.append("isAvailable", payload.isAvailable ?? true);
     form.append("isNouvellite", payload.isNouvellite ?? false);
     form.append("isPromotion", payload.isPromotion ?? false);

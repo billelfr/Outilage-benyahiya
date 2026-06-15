@@ -11,12 +11,16 @@ const manrope = Manrope({
 export const metadata = {
   title: BRAND_NAME,
   description: "Premium e-commerce storefront and admin dashboard.",
-  viewport: "width=device-width, initial-scale=1",
   icons: {
     icon: "/favicon.ico",
     shortcut: "/favicon.ico",
     apple: "/icon.png",
   },
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({ children }) {

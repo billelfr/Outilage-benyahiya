@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { SectionHeader } from "@/components/ui/card";
 import { fetchProducts, getErrorMessage } from "@/lib/api";
 import { normalizeProduct } from "@/lib/normalize";
-import { getProductCategory } from "@/lib/product-categories";
+import { getProductCategory, productMatchesCategory } from "@/lib/product-categories";
 
 export default function CategoryPage() {
   const params = useParams();
@@ -46,9 +46,7 @@ export default function CategoryPage() {
     };
   }, []);
 
-  const filteredProducts = products.filter(
-    (product) => product.category === selectedCategory,
-  );
+  const filteredProducts = products.filter((product) => productMatchesCategory(product, selectedCategory));
 
   if (!category) {
     return (

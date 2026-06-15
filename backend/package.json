@@ -7,6 +7,7 @@
     "dev": "nodemon src/server.js",
     "start": "node src/server.js",
     "admin:seed": "node src/scripts/seedAdmin.js",
+    "db:clean-client": "node src/scripts/cleanClientDatabase.js",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma db push",
     "prisma:push": "prisma db push",

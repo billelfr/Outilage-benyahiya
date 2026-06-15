@@ -62,6 +62,10 @@ async function createProduct(data) {
     throw createHttpError(400, "Product reference (SKU) is required and must be unique");
   }
 
+  if (data.isPromotion && (!Number.isFinite(data.promotionPrice) || data.promotionPrice <= 0)) {
+    throw createHttpError(400, "Promotion price is required for promotional products");
+  }
+
   const product = await prisma.product.create({
     data: {
       reference: data.reference.trim(),
@@ -69,6 +73,7 @@ async function createProduct(data) {
       description: data.description || null,
       category: data.category || null,
       price: data.price,
+      promotionPrice: data.isPromotion ? data.promotionPrice : null,
       imageUrl: data.imageUrl || null,
       isAvailable: data.isAvailable ?? true,
       isNouvellite: data.isNouvellite ?? false,
@@ -84,6 +89,10 @@ async function createProduct(data) {
 async function updateProduct(reference, data) {
   const existingProduct = await getProductById(reference);
 
+  if (data.isPromotion && (!Number.isFinite(data.promotionPrice) || data.promotionPrice <= 0)) {
+    throw createHttpError(400, "Promotion price is required for promotional products");
+  }
+
   // If image URL is being changed, delete the old image from Cloudinary
   if (data.imageUrl && data.imageUrl !== existingProduct.imageUrl) {
     await deleteCloudinaryImage(existingProduct.imageUrl);
@@ -96,6 +105,7 @@ async function updateProduct(reference, data) {
       description: data.description,
       category: data.category,
       price: data.price,
+      promotionPrice: data.isPromotion ? data.promotionPrice : null,
       imageUrl: data.imageUrl,
       isAvailable: data.isAvailable,
       isNouvellite: data.isNouvellite,

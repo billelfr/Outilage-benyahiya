@@ -10,17 +10,24 @@ export function getEntityId(entity) {
 export function normalizeProduct(product = {}) {
   const reference = product.reference || product.sku || "";
   const isAvailable = product.isAvailable !== false;
+  const originalPrice = toNumber(product.price || product.amount || product.unitPrice);
+  const promotionPrice = toNumber(product.promotionPrice || product.promotion_price);
+  const isPromotion = Boolean(product.isPromotion);
+  const hasPromotionPrice = isPromotion && promotionPrice > 0;
+
   return {
     id: reference,
     name: product.name || product.title || "Untitled product",
     description: product.description || product.details || "No description provided yet.",
     category: product.category || product.collection || "General",
     image: product.image || product.imageUrl || product.thumbnail || product.photo || "",
-    price: toNumber(product.price || product.amount || product.unitPrice),
+    price: hasPromotionPrice ? promotionPrice : originalPrice,
+    originalPrice,
+    promotionPrice: hasPromotionPrice ? promotionPrice : 0,
     reference: reference,
     inStock: isAvailable,
     isNouvellite: Boolean(product.isNouvellite),
-    isPromotion: Boolean(product.isPromotion),
+    isPromotion,
     featured: Boolean(product.featured || product.isFeatured),
     raw: product,
   };

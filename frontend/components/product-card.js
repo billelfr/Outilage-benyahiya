@@ -15,6 +15,7 @@ export function ProductCard({ product }) {
   const { addItem } = useCart();
   const stockValue = Number(product?.stock ?? product?.quantity);
   const hasEmptyStockCount = Number.isFinite(stockValue) && stockValue <= 0;
+  const hasPromotionPrice = normalizedProduct.isPromotion && normalizedProduct.promotionPrice > 0;
   const isOutOfStock =
     !normalizedProduct.inStock ||
     product?.isAvailable === false ||
@@ -94,9 +95,22 @@ export function ProductCard({ product }) {
         </div>
 
         <div className="flex items-center justify-between gap-3">
-          <p className="text-2xl font-bold tracking-tight">
-            {formatCurrency(normalizedProduct.price)}
-          </p>
+          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+            {hasPromotionPrice ? (
+              <>
+                <span className="text-base font-black text-red-600 line-through decoration-2">
+                  {formatCurrency(normalizedProduct.originalPrice)}
+                </span>
+                <span className="text-2xl font-black tracking-tight text-slate-950">
+                  {formatCurrency(normalizedProduct.promotionPrice)}
+                </span>
+              </>
+            ) : (
+              <span className="text-2xl font-bold tracking-tight">
+                {formatCurrency(normalizedProduct.price)}
+              </span>
+            )}
+          </div>
 
           <div className="flex flex-col items-end gap-1">
             <Button

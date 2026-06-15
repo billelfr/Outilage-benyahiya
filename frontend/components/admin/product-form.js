@@ -10,6 +10,7 @@ const defaultValues = {
   name: "",
   category: "",
   price: "",
+  promotionPrice: "",
   reference: "",
   image: "",
   isAvailable: true,
@@ -64,6 +65,7 @@ export function ProductForm({
     form.append("name", String(values.name || "").trim());
     form.append("category", String(values.category || "").trim());
     form.append("price", String(Number(values.price) || 0));
+    form.append("promotionPrice", values.isPromotion ? String(Number(values.promotionPrice) || 0) : "");
     form.append("reference", String(values.reference || "").trim());
     form.append("isAvailable", values.isAvailable ? "true" : "false");
     form.append("isNouvellite", values.isNouvellite ? "true" : "false");
@@ -128,6 +130,18 @@ export function ProductForm({
             placeholder="2499"
             required
           />
+
+          {values.isPromotion ? (
+            <FormField
+              label="Prix promotion"
+              name="promotionPrice"
+              type="number"
+              value={values.promotionPrice}
+              onChange={handleChange}
+              placeholder="1999"
+              required
+            />
+          ) : null}
 
           <FormField
             label="Référence (SKU)"
