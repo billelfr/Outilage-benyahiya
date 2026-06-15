@@ -4,11 +4,10 @@ import { Fragment, useEffect, useState } from "react";
 import { EmptyState } from "@/components/empty-state";
 import { LoadingState } from "@/components/loading-state";
 import { OrderStatusForm } from "@/components/admin/order-status-form";
-import { fetchOrders, updateOrderStatus } from "@/lib/orders";
+import { fetchOrders, updateOrderStatus } from "@/lib/adminOrders";
 import { formatCurrency, formatDate } from "@/lib/format";
 import { normalizeOrder } from "@/lib/normalize";
 import { Card, SectionHeader } from "@/components/ui/card";
-import { DataTable } from "@/components/ui/table";
 import { StatusBadge } from "@/components/ui/status-badge";
 
 export default function AdminOrdersPage() {

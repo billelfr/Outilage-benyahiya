@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { LoadingState } from "@/components/loading-state";
-import { fetchAdminProducts, getErrorMessage } from "@/lib/api";
-import { fetchOrders } from "@/lib/orders";
+import { fetchAdminProducts, getErrorMessage } from "@/lib/adminApi";
+import { fetchOrders } from "@/lib/adminOrders";
 import { formatCurrency, formatDate } from "@/lib/format";
 import { normalizeOrder, normalizeProduct } from "@/lib/normalize";
 import { Button } from "@/components/ui/button";

@@ -50,6 +50,8 @@ async function createOrder(payload) {
   const productMap = new Map(products.map((product) => [product.reference, product]));
   const normalizedItems = items.map((item) => {
     const product = productMap.get(item.productRef);
+    const activePrice =
+      product.isPromotion && product.promotionPrice > 0 ? product.promotionPrice : product.price;
 
     // Check if product is available
     if (!product.isAvailable) {
@@ -59,7 +61,7 @@ async function createOrder(payload) {
     return {
       productRef: product.reference,
       quantity: item.quantity,
-      price: product.price
+      price: activePrice
     };
   });
 

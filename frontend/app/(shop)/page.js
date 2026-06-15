@@ -6,7 +6,7 @@ import Link from "next/link";
 import { EmptyState } from "@/components/empty-state";
 import { LoadingState } from "@/components/loading-state";
 import { ProductCard } from "@/components/product-card";
-import { fetchProducts, getErrorMessage } from "@/lib/api";
+import { fetchProducts, getErrorMessage } from "@/lib/publicApi";
 import { normalizeProduct } from "@/lib/normalize";
 import { PRODUCT_CATEGORIES, productMatchesCategory } from "@/lib/product-categories";
 import { SectionHeader } from "@/components/ui/card";
@@ -307,8 +307,8 @@ export default function HomePage() {
 
         {!loading && !error && filteredProducts.length > 0 ? (
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
-            {filteredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
+            {filteredProducts.map((product, index) => (
+              <ProductCard key={product.id} product={product} priorityImage={index === 0} />
             ))}
           </div>
         ) : null}

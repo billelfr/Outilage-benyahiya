@@ -1,16 +1,22 @@
 "use client";
 
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import dynamic from "next/dynamic";
 import { useState } from "react";
 import { CartLineItem } from "@/components/cart/cart-line-item";
 import { EmptyState } from "@/components/empty-state";
 import { FormField } from "@/components/form-field";
 import { LoadingState } from "@/components/loading-state";
 import { formatCurrency } from "@/lib/format";
-import { createOrder } from "@/lib/orders";
+import { createOrder } from "@/lib/publicOrders";
 import { useCart } from "@/store/cart";
 import { Button } from "@/components/ui/button";
 import { Card, SectionHeader } from "@/components/ui/card";
+
+// Dynamically import the Lottie player component (removes it from the initial bundle load)
+const DotLottieReact = dynamic(
+  () => import("@lottiefiles/dotlottie-react").then((mod) => mod.DotLottieReact),
+  { ssr: false }
+);
 
 const initialOrderForm = {
   userName: "",

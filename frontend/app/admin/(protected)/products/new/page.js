@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ProductForm } from "@/components/admin/product-form";
-import { createAdminProduct, getErrorMessage } from "@/lib/api";
+import { createAdminProduct, getErrorMessage } from "@/lib/adminApi";
 import { Card, SectionHeader } from "@/components/ui/card";
 
 export default function NewProductPage() {

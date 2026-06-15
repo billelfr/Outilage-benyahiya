@@ -7,7 +7,7 @@ import { LoadingState } from "@/components/loading-state";
 import { ProductCard } from "@/components/product-card";
 import { Button } from "@/components/ui/button";
 import { SectionHeader } from "@/components/ui/card";
-import { fetchProducts, getErrorMessage } from "@/lib/api";
+import { fetchProducts, getErrorMessage } from "@/lib/publicApi";
 import { normalizeProduct } from "@/lib/normalize";
 import { getProductCategory, productMatchesCategory } from "@/lib/product-categories";
 

@@ -1,27 +1,12 @@
+// lib/adminOrders.js
 import { getAdminToken } from "@/lib/auth";
 
 async function parseResponse(response) {
   const data = await response.json().catch(() => ({}));
-
   if (!response.ok) {
     throw new Error(data?.message || "Order request failed.");
   }
-
   return data;
-}
-
-export async function createOrder(payload) {
-  const data = await parseResponse(
-    await fetch("/api/orders", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    }),
-  );
-
-  return data.order;
 }
 
 export async function fetchOrders() {
@@ -31,7 +16,6 @@ export async function fetchOrders() {
       headers: token ? { Authorization: `Bearer ${token}` } : {},
     }),
   );
-
   return data.orders || [];
 }
 
@@ -47,6 +31,5 @@ export async function updateOrderStatus(id, status) {
       body: JSON.stringify({ status }),
     }),
   );
-
   return data.order;
 }

@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 const fallbackImage =
   "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=900&q=80";
 
-export function ProductCard({ product }) {
+export function ProductCard({ product, priorityImage = false }) {
   const normalizedProduct = normalizeProduct(product);
   const { addItem } = useCart();
   const stockValue = Number(product?.stock ?? product?.quantity);
@@ -43,6 +43,9 @@ export function ProductCard({ product }) {
             src={normalizedProduct.image || fallbackImage}
             alt={normalizedProduct.name}
             fill
+            priority={priorityImage}
+            loading={priorityImage ? "eager" : "lazy"}
+            fetchPriority={priorityImage ? "high" : "auto"}
             sizes="(min-width: 1280px) 30vw, (min-width: 768px) 45vw, 90vw"
             className="object-cover transition duration-700 group-hover:scale-[1.05]"
           />

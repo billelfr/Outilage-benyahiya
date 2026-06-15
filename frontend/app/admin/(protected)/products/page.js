@@ -9,7 +9,7 @@ import {
   deleteAdminProduct,
   fetchAdminProducts,
   getErrorMessage,
-} from "@/lib/api";
+} from "@/lib/adminApi";
 import { formatCurrency, formatCategory } from "@/lib/format";
 import { normalizeProduct } from "@/lib/normalize";
 import { Button } from "@/components/ui/button";

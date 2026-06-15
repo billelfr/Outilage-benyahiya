@@ -2,7 +2,6 @@ import axios from "axios";
 import { clearAdminToken, getAdminToken } from "@/lib/auth";
 
 const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000").replace(/\/$/, "");
-
 const PRODUCTS_ENDPOINT = "/api/products";
 
 const api = axios.create({
@@ -21,40 +20,30 @@ const adminApi = axios.create({
   },
 });
 
+// Interceptor to inject bearer token safely
 adminApi.interceptors.request.use((config) => {
   const token = getAdminToken();
-
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
-
   return config;
 });
 
+// Interceptor to handle session expiration (401)
 adminApi.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error?.response?.status === 401) {
       clearAdminToken();
     }
-
     return Promise.reject(error);
   },
 );
 
 function unwrapCollection(data, key) {
-  if (Array.isArray(data)) {
-    return data;
-  }
-
-  if (Array.isArray(data?.[key])) {
-    return data[key];
-  }
-
-  if (Array.isArray(data?.data)) {
-    return data.data;
-  }
-
+  if (Array.isArray(data)) return data;
+  if (Array.isArray(data?.[key])) return data[key];
+  if (Array.isArray(data?.data)) return data.data;
   return [];
 }
 
@@ -71,16 +60,7 @@ export function getErrorMessage(error, fallback = "Something went wrong. Please 
   );
 }
 
-export async function fetchProducts() {
-  const { data } = await api.get(PRODUCTS_ENDPOINT);
-  return unwrapCollection(data, "products");
-}
-
-export async function fetchProduct(reference) {
-  const encodedRef = encodeURIComponent(reference);
-  const { data } = await api.get(`${PRODUCTS_ENDPOINT}/${encodedRef}`);
-  return unwrapEntity(data, "product");
-}
+// --- Admin API Functions ---
 
 export async function loginAdmin(credentials) {
   const { data } = await api.post("/api/admin/login", credentials);
@@ -123,7 +103,6 @@ export async function createAdminProduct(payload) {
   }
 
   const { data } = await adminApi.post(PRODUCTS_ENDPOINT, form, {
-    // Let the browser/axios set Content-Type including boundary
     headers: { ...adminApi.defaults.headers },
   });
   return unwrapEntity(data, "product");

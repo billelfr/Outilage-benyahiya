@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { FormField } from "@/components/form-field";
-import { loginAdmin, getErrorMessage } from "@/lib/api";
+import { loginAdmin, getErrorMessage } from "@/lib/adminApi";
 import { setAdminToken } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";

@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { fetchAdminMe, getErrorMessage } from "@/lib/api";
+import { fetchAdminMe, getErrorMessage } from "@/lib/adminApi";
 import { clearAdminToken, getAdminToken } from "@/lib/auth";
 import { normalizeAdminUser } from "@/lib/normalize";
 

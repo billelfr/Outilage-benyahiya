@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { EmptyState } from "@/components/empty-state";
 import { LoadingState } from "@/components/loading-state";
-import { fetchProduct, getErrorMessage } from "@/lib/api";
+import { fetchProduct, getErrorMessage } from "@/lib/publicApi";
 import { formatCurrency, formatCategory } from "@/lib/format";
 import { normalizeProduct } from "@/lib/normalize";
 import { useCart } from "@/store/cart";

@@ -4,7 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ProductForm } from "@/components/admin/product-form";
 import { LoadingState } from "@/components/loading-state";
-import { fetchProduct, getErrorMessage, updateAdminProduct } from "@/lib/api";
+import { fetchProduct, getErrorMessage, updateAdminProduct } from "@/lib/adminApi";
 import { normalizeProduct } from "@/lib/normalize";
 import { Card, SectionHeader } from "@/components/ui/card";
 

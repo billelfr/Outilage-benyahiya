@@ -1,4 +1,5 @@
 import Image from "next/image";
+import React from "react";
 
 export const LOGO_SRC = "/logo.png";
 export const BRAND_NAME = "Outillage General Benyahiya";

@@ -10,7 +10,7 @@ export function getEntityId(entity) {
 export function normalizeProduct(product = {}) {
   const reference = product.reference || product.sku || "";
   const isAvailable = product.isAvailable !== false;
-  const originalPrice = toNumber(product.price || product.amount || product.unitPrice);
+  const originalPrice = toNumber(product.originalPrice || product.price || product.amount || product.unitPrice);
   const promotionPrice = toNumber(product.promotionPrice || product.promotion_price);
   const isPromotion = Boolean(product.isPromotion);
   const hasPromotionPrice = isPromotion && promotionPrice > 0;
