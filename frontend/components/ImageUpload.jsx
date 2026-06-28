@@ -28,11 +28,20 @@ function getProgressWidth(progress) {
   return "w-1/12";
 }
 
-export function ImageUpload({ value, onChange, disabled = false, onUploadStateChange }) {
+export function ImageUpload({
+  value,
+  onChange,
+  disabled = false,
+  onUploadStateChange,
+  title = "Product image",
+  emptyLabel = "Product image",
+  alt = "Selected product",
+  uploadValue = "file",
+}) {
   const [localPreviewUrl, setLocalPreviewUrl] = useState("");
   const [localError, setLocalError] = useState("");
   const { uploadImage, uploading, progress, error, maxSize, allowedTypes } = useImageUpload({
-    onUploaded: onChange,
+    onUploaded: uploadValue === "file" ? onChange : undefined,
   });
 
   const helperText = useMemo(
@@ -70,8 +79,11 @@ export function ImageUpload({ value, onChange, disabled = false, onUploadStateCh
     });
 
     try {
-      // uploadImage will validate and then call onUploaded(file)
-      await uploadImage(file);
+      const result = await uploadImage(file);
+
+      if (uploadValue === "url") {
+        onChange?.(result.url);
+      }
     } catch (uploadError) {
       setLocalError(uploadError.message);
     } finally {
@@ -90,22 +102,22 @@ export function ImageUpload({ value, onChange, disabled = false, onUploadStateCh
           {previewUrl ? (
             <Image
               src={previewUrl}
-              alt="Selected product"
+              alt={alt}
               fill
               sizes="180px"
               className="object-cover"
-              unoptimized={previewUrl.startsWith("blob:")}
+              unoptimized={previewUrl.startsWith("blob:") || previewUrl.startsWith("data:")}
             />
           ) : (
             <div className="grid h-full place-items-center px-6 text-center text-sm font-semibold text-muted">
-              Product image
+              {emptyLabel}
             </div>
           )}
         </div>
 
         <div className="flex flex-col justify-between gap-4">
           <div>
-            <p className="text-sm font-bold text-muted-strong">Product image</p>
+            <p className="text-sm font-bold text-muted-strong">{title}</p>
             <p className="mt-1 text-sm leading-6 text-muted">{helperText}</p>
           </div>
 

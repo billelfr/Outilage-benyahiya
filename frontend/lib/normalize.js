@@ -14,13 +14,19 @@ export function normalizeProduct(product = {}) {
   const promotionPrice = toNumber(product.promotionPrice || product.promotion_price);
   const isPromotion = Boolean(product.isPromotion);
   const hasPromotionPrice = isPromotion && promotionPrice > 0;
+  const images = Array.isArray(product.images)
+    ? product.images.filter(Boolean)
+    : [];
+  const fallbackImage = product.image || product.imageUrl || product.thumbnail || product.photo || "";
+  const normalizedImages = images.length > 0 ? images : [fallbackImage].filter(Boolean);
 
   return {
     id: reference,
     name: product.name || product.title || "Untitled product",
     description: product.description || product.details || "No description provided yet.",
     category: product.category || product.collection || "General",
-    image: product.image || product.imageUrl || product.thumbnail || product.photo || "",
+    image: normalizedImages[0] || "",
+    images: normalizedImages,
     price: hasPromotionPrice ? promotionPrice : originalPrice,
     originalPrice,
     promotionPrice: hasPromotionPrice ? promotionPrice : 0,

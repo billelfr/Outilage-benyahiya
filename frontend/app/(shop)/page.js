@@ -9,6 +9,10 @@ import { ProductCard } from "@/components/product-card";
 import { fetchProducts, getErrorMessage } from "@/lib/publicApi";
 import { normalizeProduct } from "@/lib/normalize";
 import { PRODUCT_CATEGORIES, productMatchesCategory } from "@/lib/product-categories";
+import {
+  applyCategoryPosterOverrides,
+  readCategoryPosterOverrides,
+} from "@/lib/category-posters";
 import { SectionHeader } from "@/components/ui/card";
 
 const CATEGORIES = PRODUCT_CATEGORIES;
@@ -22,6 +26,7 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [showFilters, setShowFilters] = useState(false);
+  const [categoryPosterOverrides, setCategoryPosterOverrides] = useState({});
   const deferredSearch = useDeferredValue(search);
   const deferredCategory = useDeferredValue(selectedCategory);
   const deferredMinPrice = useDeferredValue(minPrice);
@@ -53,6 +58,26 @@ export default function HomePage() {
       active = false;
     };
   }, []);
+
+  useEffect(() => {
+    function syncCategoryPosters() {
+      setCategoryPosterOverrides(readCategoryPosterOverrides());
+    }
+
+    syncCategoryPosters();
+    window.addEventListener("storage", syncCategoryPosters);
+    window.addEventListener("category-posters-updated", syncCategoryPosters);
+
+    return () => {
+      window.removeEventListener("storage", syncCategoryPosters);
+      window.removeEventListener("category-posters-updated", syncCategoryPosters);
+    };
+  }, []);
+
+  const displayCategories = applyCategoryPosterOverrides(
+    PRODUCT_CATEGORIES,
+    categoryPosterOverrides,
+  );
 
   const filteredProducts = products.filter((product) => {
     const query = deferredSearch.trim().toLowerCase();
@@ -106,7 +131,7 @@ export default function HomePage() {
         </div>
 
         <div className="-mx-2 flex snap-x snap-mandatory gap-4 overflow-x-auto px-2 pb-4 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {PRODUCT_CATEGORIES.map((category) => (
+          {displayCategories.map((category) => (
             <Link
               key={category.value}
               href={`/categories/${category.value}`}
@@ -123,17 +148,8 @@ export default function HomePage() {
                 className="object-cover transition duration-700 group-hover:scale-[1.05]"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/5" />
-              <div className="absolute left-4 top-4 rounded-full bg-white/95 px-3 py-1 text-xs font-black text-slate-950 shadow-sm backdrop-blur">
-                {getCategoryCount(category.value)} produit(s)
-              </div>
-              <div className="absolute inset-x-0 bottom-0 p-5 text-white">
-                <p className="max-w-[15rem] text-xl font-black leading-tight tracking-tight">
-                  {category.label}
-                </p>
-                <span className="mt-3 inline-flex min-h-11 items-center rounded-xl bg-accent-strong px-4 text-sm font-black text-slate-950 shadow-sm transition group-hover:bg-[#eab308]">
-                  Voir la catégorie
-                </span>
-              </div>
+              
+              
             </Link>
           ))}
         </div>

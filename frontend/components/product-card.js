@@ -1,14 +1,11 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { formatCurrency, formatCategory } from "@/lib/format";
 import { normalizeProduct } from "@/lib/normalize";
 import { useCart } from "@/store/cart";
 import { Button } from "@/components/ui/button";
-
-const fallbackImage =
-  "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=900&q=80";
+import { ProductImageCarousel } from "@/components/product-image-carousel";
 
 export function ProductCard({ product, priorityImage = false }) {
   const normalizedProduct = normalizeProduct(product);
@@ -37,46 +34,41 @@ export function ProductCard({ product, priorityImage = false }) {
         isOutOfStock ? "opacity-75" : ""
       }`}
     >
-      <Link href={`/products/${normalizedProduct.id}`} className="block">
-        <div className="relative aspect-[4/3] overflow-hidden bg-slate-100">
-          <Image
-            src={normalizedProduct.image || fallbackImage}
-            alt={normalizedProduct.name}
-            fill
-            priority={priorityImage}
-            loading={priorityImage ? "eager" : "lazy"}
-            fetchPriority={priorityImage ? "high" : "auto"}
-            sizes="(min-width: 1280px) 30vw, (min-width: 768px) 45vw, 90vw"
-            className="object-cover transition duration-700 group-hover:scale-[1.05]"
-          />
+      <div className="relative overflow-hidden bg-slate-100">
+        <ProductImageCarousel
+          images={normalizedProduct.images}
+          alt={normalizedProduct.name}
+          href={`/products/${normalizedProduct.id}`}
+          priorityImage={priorityImage}
+          sizes="(min-width: 1280px) 30vw, (min-width: 768px) 45vw, 90vw"
+        />
 
-          <div className="absolute left-4 top-4 flex flex-wrap gap-2">
-            <div className="rounded-full bg-white/90 px-3 py-1 text-xs font-bold text-muted-strong shadow-sm backdrop-blur">
-              {formatCategory(normalizedProduct.category)}
-            </div>
-
-            {normalizedProduct.isNouvellite && (
-              <div className="rounded-full bg-blue-500 px-3 py-1 text-xs font-bold text-white shadow-sm">
-                Nouveauté
-              </div>
-            )}
-
-            {normalizedProduct.isPromotion && (
-              <div className="rounded-full bg-red-500 px-3 py-1 text-xs font-bold text-white shadow-sm">
-                Promotion
-              </div>
-            )}
+        <div className="absolute left-4 top-4 flex flex-wrap gap-2">
+          <div className="rounded-full bg-white/90 px-3 py-1 text-xs font-bold text-muted-strong shadow-sm backdrop-blur">
+            {formatCategory(normalizedProduct.category)}
           </div>
 
-          {isOutOfStock && (
-            <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-              <span className="bg-red-600 text-white px-4 py-2 rounded-lg font-bold text-sm">
-                Rupture de stock
-              </span>
+          {normalizedProduct.isNouvellite && (
+            <div className="rounded-full bg-blue-500 px-3 py-1 text-xs font-bold text-white shadow-sm">
+              Nouveauté
+            </div>
+          )}
+
+          {normalizedProduct.isPromotion && (
+            <div className="rounded-full bg-red-500 px-3 py-1 text-xs font-bold text-white shadow-sm">
+              Promotion
             </div>
           )}
         </div>
-      </Link>
+
+        {isOutOfStock && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+            <span className="bg-red-600 text-white px-4 py-2 rounded-lg font-bold text-sm">
+              Rupture de stock
+            </span>
+          </div>
+        )}
+      </div>
 
       <div className="space-y-5 p-5">
         <div className="space-y-2">

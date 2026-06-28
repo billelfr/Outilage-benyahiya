@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { EmptyState } from "@/components/empty-state";
@@ -11,6 +10,7 @@ import { normalizeProduct } from "@/lib/normalize";
 import { useCart } from "@/store/cart";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { ProductImageCarousel } from "@/components/product-image-carousel";
 
 export default function ProductDetailsPage() {
   const params = useParams();
@@ -56,7 +56,7 @@ export default function ProductDetailsPage() {
       <div className="page-shell py-12">
         <LoadingState
           title="Chargement du produit"
-          description="Récupération des détails du produit depuis l'API."
+          description="Récupération des détails du produit depuis l&apos;API."
         />
       </div>
     );
@@ -90,18 +90,12 @@ export default function ProductDetailsPage() {
 
       <div className="grid gap-6 lg:grid-cols-[1.08fr_0.92fr]">
         <Card className="overflow-hidden">
-          <div className="relative aspect-[4/5] bg-slate-100 md:aspect-square">
-            <Image
-              src={
-                product.image ||
-                "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1200&q=80"
-              }
-              alt={product.name}
-              fill
-              sizes="(min-width: 1024px) 50vw, 100vw"
-              className="object-cover"
-            />
-          </div>
+          <ProductImageCarousel
+            images={product.images}
+            alt={product.name}
+            priorityImage
+            sizes="(min-width: 1024px) 50vw, 100vw"
+          />
         </Card>
 
         <Card className="p-7 md:p-10">
@@ -123,7 +117,7 @@ export default function ProductDetailsPage() {
           <h1 className="mt-4 text-4xl font-bold leading-none tracking-tight md:text-6xl">
             {product.name}
           </h1>
-          <p className="mt-5 text-base leading-7 text-muted">{product.description}</p>
+
           <div className="mt-8 flex flex-wrap items-baseline gap-x-3 gap-y-2">
             {hasPromotionPrice ? (
               <>
@@ -164,6 +158,11 @@ export default function ProductDetailsPage() {
               </Button>
             )}
           </div>
+          
+          <p className="mt-5 text-base leading-7 text-muted">{product.description}</p>
+          
+
+          
 
           <div className="mt-8 grid gap-3 text-sm text-muted md:grid-cols-2">
             <div className="rounded-2xl border border-line bg-white/70 p-4">
@@ -172,7 +171,7 @@ export default function ProductDetailsPage() {
             </div>
             <div className="rounded-2xl border border-line bg-white/70 p-4">
               <p className="text-xs font-bold uppercase tracking-[0.18em]">Panier local</p>
-              <p className="mt-2 leading-6">Les articles restent dans le navigateur jusqu'à la validation de la commande ou leur suppression manuelle.</p>
+              <p className="mt-2 leading-6">Les articles restent dans le navigateur jusqu&apos;à la validation de la commande ou leur suppression manuelle.</p>
             </div>
           </div>
         </Card>

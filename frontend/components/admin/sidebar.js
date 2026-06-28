@@ -9,6 +9,7 @@ import { Logo } from "@/components/ui/Logo";
 const navItems = [
   { href: "/admin", label: "Aperçu" },
   { href: "/admin/products", label: "Produits" },
+  { href: "/admin/category-posters", label: "Posters catégories" },
   { href: "/admin/orders", label: "Commandes" },
 ];
 
@@ -25,7 +26,7 @@ export function Sidebar() {
 
           <div>
             <p className="text-sm font-bold">Console admin</p>
-            <p className="text-xs text-slate-300">Console d'opérations</p>
+            <p className="text-xs text-slate-300">Console d&apos;opérations</p>
           </div>
         </div>
 

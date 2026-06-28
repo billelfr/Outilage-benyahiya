@@ -4,7 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ProductForm } from "@/components/admin/product-form";
 import { LoadingState } from "@/components/loading-state";
-import { fetchAdminProducts, getErrorMessage, updateAdminProduct } from "@/lib/adminApi";
+import { fetchAdminProduct, getErrorMessage, updateAdminProduct } from "@/lib/adminApi";
 import { normalizeProduct } from "@/lib/normalize";
 import { Card, SectionHeader } from "@/components/ui/card";
 
@@ -21,7 +21,7 @@ export default function EditProductPage() {
 
     async function loadProduct() {
       try {
-        const response = await fetchAdminProducts(params.id);
+        const response = await fetchAdminProduct(params.id);
 
         if (!active) return;
 
@@ -73,7 +73,7 @@ export default function EditProductPage() {
         <SectionHeader
           eyebrow="Produits"
           title="Modifier le produit"
-          description="Mettez à jour les informations de la boutique tout en conservant l'enregistrement existant du produit."
+          description="Mettez à jour les informations de la boutique tout en conservant l&apos;enregistrement existant du produit."
         />
         {error ? <p className="mt-4 text-sm font-medium text-danger">{error}</p> : null}
       </Card>
@@ -86,7 +86,7 @@ export default function EditProductPage() {
             price: product.originalPrice,
             promotionPrice: product.promotionPrice,
             reference: product.reference,
-            image: product.image,
+            images: product.images,
             isAvailable: product.inStock,
             isNouvellite: product.isNouvellite,
             isPromotion: product.isPromotion,

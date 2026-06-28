@@ -87,6 +87,12 @@ export async function fetchAdminProducts() {
   return unwrapCollection(data, "products");
 }
 
+export async function fetchAdminProduct(reference) {
+  const encodedRef = encodeURIComponent(reference);
+  const { data } = await adminApi.get(`${PRODUCTS_ENDPOINT}/${encodedRef}`);
+  return unwrapEntity(data, "product");
+}
+
 export async function createAdminProduct(payload) {
   const form = payload instanceof FormData ? payload : new FormData();
 
@@ -99,7 +105,17 @@ export async function createAdminProduct(payload) {
     form.append("isAvailable", payload.isAvailable ?? true);
     form.append("isNouvellite", payload.isNouvellite ?? false);
     form.append("isPromotion", payload.isPromotion ?? false);
-    if (payload.image) form.append("image", payload.image);
+    if (Array.isArray(payload.images)) {
+      payload.images.forEach((image) => {
+        if (image instanceof File) {
+          form.append("images", image);
+        } else if (typeof image === "string" && image) {
+          form.append("imageUrls", image);
+        }
+      });
+    } else if (payload.image) {
+      form.append("images", payload.image);
+    }
   }
 
   const { data } = await adminApi.post(PRODUCTS_ENDPOINT, form, {
@@ -120,7 +136,17 @@ export async function updateAdminProduct(reference, payload) {
     form.append("isAvailable", payload.isAvailable ?? true);
     form.append("isNouvellite", payload.isNouvellite ?? false);
     form.append("isPromotion", payload.isPromotion ?? false);
-    if (payload.image) form.append("image", payload.image);
+    if (Array.isArray(payload.images)) {
+      payload.images.forEach((image) => {
+        if (image instanceof File) {
+          form.append("images", image);
+        } else if (typeof image === "string" && image) {
+          form.append("imageUrls", image);
+        }
+      });
+    } else if (payload.image) {
+      form.append("images", payload.image);
+    }
   }
 
   const encodedRef = encodeURIComponent(reference);

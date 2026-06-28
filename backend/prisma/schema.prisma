@@ -41,8 +41,10 @@ model Product {
   description    String?
   category       ProductCategory? @map("category")
   price          Float
+  featured       Boolean?         @default(false)
   promotionPrice Float?           @map("promotion_price")
   imageUrl       String?          @map("image_url")
+  images         String[]         @default([])
   isAvailable    Boolean?         @default(true) @map("is_available")
   isNouvellite   Boolean?         @default(false) @map("is_nouvellite")
   isPromotion    Boolean?         @default(false) @map("is_promotion")

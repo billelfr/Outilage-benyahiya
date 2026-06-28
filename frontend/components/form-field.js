@@ -10,6 +10,8 @@ export function FormField({
   children,
   helpText,
   error,
+  readOnly = false,
+  disabled = false,
 }) {
   const commonProps = {
     id: name,
@@ -18,7 +20,9 @@ export function FormField({
     onChange,
     placeholder,
     required,
-    className: `input-base ${error ? "border-danger ring-danger/20" : ""}`,
+    readOnly,
+    disabled,
+    className: `input-base ${error ? "border-danger ring-danger/20" : ""} ${disabled ? "opacity-60 cursor-not-allowed bg-slate-100" : ""}`,
   };
 
   return (

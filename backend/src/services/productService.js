@@ -6,6 +6,14 @@ const { deleteCloudinaryImage } = require("../lib/cloudinaryUtils");
 const PRODUCTS_CACHE_KEY = "products:all";
 const PRODUCT_CACHE_PREFIX = "products:detail";
 
+function normalizeImages(data) {
+  if (Array.isArray(data.images)) {
+    return data.images.filter(Boolean).slice(0, 6);
+  }
+
+  return [data.imageUrl].filter(Boolean);
+}
+
 async function getProducts() {
   const cachedProducts = await cache.getJson(PRODUCTS_CACHE_KEY);
 
@@ -66,6 +74,12 @@ async function createProduct(data) {
     throw createHttpError(400, "Promotion price is required for promotional products");
   }
 
+  const images = normalizeImages(data);
+
+  if (images.length === 0) {
+    throw createHttpError(400, "At least one product image is required");
+  }
+
   const product = await prisma.product.create({
     data: {
       reference: data.reference.trim(),
@@ -74,10 +88,12 @@ async function createProduct(data) {
       category: data.category || null,
       price: data.price,
       promotionPrice: data.isPromotion ? data.promotionPrice : null,
-      imageUrl: data.imageUrl || null,
+      imageUrl: images[0] || null,
+      images,
       isAvailable: data.isAvailable ?? true,
       isNouvellite: data.isNouvellite ?? false,
       isPromotion: data.isPromotion ?? false,
+      featured: data.featured ?? false,
     }
   });
 
@@ -93,9 +109,21 @@ async function updateProduct(reference, data) {
     throw createHttpError(400, "Promotion price is required for promotional products");
   }
 
-  // If image URL is being changed, delete the old image from Cloudinary
-  if (data.imageUrl && data.imageUrl !== existingProduct.imageUrl) {
-    await deleteCloudinaryImage(existingProduct.imageUrl);
+  const images = normalizeImages(data);
+
+  if (images.length === 0) {
+    throw createHttpError(400, "At least one product image is required");
+  }
+
+  const previousImages = Array.isArray(existingProduct.images) && existingProduct.images.length > 0
+    ? existingProduct.images
+    : [existingProduct.imageUrl].filter(Boolean);
+  const nextImageSet = new Set(images);
+
+  for (const previousImage of previousImages) {
+    if (!nextImageSet.has(previousImage)) {
+      await deleteCloudinaryImage(previousImage);
+    }
   }
 
   const product = await prisma.product.update({
@@ -106,10 +134,12 @@ async function updateProduct(reference, data) {
       category: data.category,
       price: data.price,
       promotionPrice: data.isPromotion ? data.promotionPrice : null,
-      imageUrl: data.imageUrl,
+      imageUrl: images[0] || null,
+      images,
       isAvailable: data.isAvailable,
       isNouvellite: data.isNouvellite,
       isPromotion: data.isPromotion,
+      featured: data.featured ?? false,
     }
   });
 
@@ -121,9 +151,12 @@ async function updateProduct(reference, data) {
 async function deleteProduct(reference) {
   const product = await getProductById(reference);
 
-  // Delete the product image from Cloudinary before deleting the product
-  if (product.imageUrl) {
-    await deleteCloudinaryImage(product.imageUrl);
+  const productImages = Array.isArray(product.images) && product.images.length > 0
+    ? product.images
+    : [product.imageUrl].filter(Boolean);
+
+  for (const imageUrl of productImages) {
+    await deleteCloudinaryImage(imageUrl);
   }
 
   const deletedProduct = await prisma.product.delete({

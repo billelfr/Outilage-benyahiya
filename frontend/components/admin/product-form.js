@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { FormField } from "@/components/form-field";
-import { ImageUpload } from "@/components/ImageUpload";
+import { MultiImageUpload } from "@/components/MultiImageUpload";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
@@ -12,7 +12,7 @@ const defaultValues = {
   price: "",
   promotionPrice: "",
   reference: "",
-  image: "",
+  images: [],
   isAvailable: true,
   isNouvellite: false,
   isPromotion: false,
@@ -37,12 +37,13 @@ export function ProductForm({
   submitting,
   errorMessage,
 }) {
+  const isEditing = Boolean(initialValues?.reference);
   const [values, setValues] = useState({
     ...defaultValues,
     ...initialValues,
   });
 
-  const [imageUploading, setImageUploading] = useState(false);
+  const [validationMessage, setValidationMessage] = useState("");
 
   function handleChange(event) {
     const { name, value, type, checked } = event.target;
@@ -56,9 +57,12 @@ export function ProductForm({
   async function handleSubmit(event) {
     event.preventDefault();
 
-    if (imageUploading) {
+    if (!Array.isArray(values.images) || values.images.length === 0) {
+      setValidationMessage("Ajoutez au moins une image du produit.");
       return;
     }
+
+    setValidationMessage("");
 
     const form = new FormData();
 
@@ -73,11 +77,13 @@ export function ProductForm({
     form.append("description", String(values.description || "").trim());
     form.append("featured", values.featured ? "true" : "false");
 
-    if (values.image instanceof File) {
-      form.append("image", values.image);
-    } else if (typeof values.image === "string" && values.image) {
-      form.append("imageUrl", values.image);
-    }
+    values.images.slice(0, 6).forEach((imageValue) => {
+      if (imageValue instanceof File) {
+        form.append("images", imageValue);
+      } else if (typeof imageValue === "string" && imageValue) {
+        form.append("imageUrls", imageValue);
+      }
+    });
 
     await onSubmit(form);
   }
@@ -150,6 +156,9 @@ export function ProductForm({
             onChange={handleChange}
             placeholder="ex : SKU-12345"
             required
+            readOnly={isEditing}
+            disabled={isEditing}
+            helpText={isEditing ? "La référence ne peut pas être modifiée." : undefined}
           />
         </div>
 
@@ -198,15 +207,15 @@ export function ProductForm({
         </div>
 
         <div className="mt-5">
-          <ImageUpload
-            value={values.image}
+          <MultiImageUpload
+            value={values.images}
             disabled={submitting}
-            onUploadStateChange={setImageUploading}
-            onChange={(fileOrUrl) => {
+            onChange={(images) => {
               setValues((currentValues) => ({
                 ...currentValues,
-                image: fileOrUrl,
+                images,
               }));
+              setValidationMessage("");
             }}
           />
         </div>
@@ -238,26 +247,24 @@ export function ProductForm({
           </span>
         </label>
 
+        {validationMessage ? (
+          <p className="mt-5 text-sm font-medium text-danger">
+            {validationMessage}
+          </p>
+        ) : null}
+
         {errorMessage ? (
           <p className="mt-5 text-sm font-medium text-danger">
             {errorMessage}
           </p>
         ) : null}
 
-        {imageUploading ? (
-          <p className="mt-5 rounded-2xl bg-yellow-50 px-4 py-3 text-sm font-semibold text-muted-strong">
-            Téléchargement de l'image avant l'enregistrement du produit.
-          </p>
-        ) : null}
-
         <div className="mt-6 flex justify-end">
           <Button
             type="submit"
-            disabled={submitting || imageUploading}
+            disabled={submitting}
           >
-            {imageUploading
-              ? "Téléchargement..."
-              : submitting
+            {submitting
               ? "Enregistrement..."
               : submitLabel}
           </Button>
