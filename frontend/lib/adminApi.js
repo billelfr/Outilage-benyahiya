@@ -118,9 +118,7 @@ export async function createAdminProduct(payload) {
     }
   }
 
-  const { data } = await adminApi.post(PRODUCTS_ENDPOINT, form, {
-    headers: { ...adminApi.defaults.headers },
-  });
+  const { data } = await adminApi.post(PRODUCTS_ENDPOINT, form);
   return unwrapEntity(data, "product");
 }
 
@@ -150,9 +148,7 @@ export async function updateAdminProduct(reference, payload) {
   }
 
   const encodedRef = encodeURIComponent(reference);
-  const { data } = await adminApi.put(`${PRODUCTS_ENDPOINT}/${encodedRef}`, form, {
-    headers: { ...adminApi.defaults.headers },
-  });
+  const { data } = await adminApi.put(`${PRODUCTS_ENDPOINT}/${encodedRef}`, form);
   return unwrapEntity(data, "product");
 }
 
