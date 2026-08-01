@@ -56,14 +56,14 @@ export default function AdminCategoryPostersPage() {
             </p>
           </div>
 
-          <Button onClick={handleSave} disabled={imageUploading}>
+          <Button onClick={handleSave} disabled={imageUploading} className="w-full sm:w-auto">
             {saved ? "Enregistré" : "Enregistrer"}
           </Button>
         </div>
       </Card>
 
       <Card className="p-6 md:p-8">
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
+        <div className="grid gap-6 md:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
           <div>
             <label
               htmlFor="category-poster"
@@ -121,10 +121,11 @@ export default function AdminCategoryPostersPage() {
                 variant="secondary"
                 onClick={handleResetPoster}
                 disabled={imageUploading || !posterOverrides[selectedCategory]}
+                className="w-full sm:w-auto"
               >
                 Revenir au poster par défaut
               </Button>
-              <Button type="button" onClick={handleSave} disabled={imageUploading}>
+              <Button type="button" onClick={handleSave} disabled={imageUploading} className="w-full sm:w-auto">
                 {imageUploading ? "Téléchargement..." : "Enregistrer le poster"}
               </Button>
             </div>

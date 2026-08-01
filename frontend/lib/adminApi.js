@@ -1,5 +1,10 @@
 import axios from "axios";
-import { clearAdminToken, getAdminToken } from "@/lib/auth";
+import {
+  clearAdminToken,
+  getAdminToken,
+  getDevOnlyAdminUser,
+  isDevOnlyAuthBypassEnabled,
+} from "@/lib/auth";
 
 const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000").replace(/\/$/, "");
 const PRODUCTS_ENDPOINT = "/api/products";
@@ -78,6 +83,10 @@ export async function loginAdmin(credentials) {
 }
 
 export async function fetchAdminMe() {
+  if (isDevOnlyAuthBypassEnabled()) { // DEV ONLY
+    return getDevOnlyAdminUser(); // DEV ONLY
+  }
+
   const { data } = await adminApi.get("/api/admin/me");
   return unwrapEntity(data, "admin");
 }

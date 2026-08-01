@@ -19,7 +19,7 @@ export function Sidebar() {
   const { admin, logout } = useAdminSession();
 
   return (
-    <aside className="panel rounded-2xl p-4 lg:sticky lg:top-6 lg:h-[calc(100vh-3rem)]">
+    <aside className="panel rounded-2xl p-3 sm:p-4 lg:sticky lg:top-6 lg:h-[calc(100vh-3rem)]">
       <div className="flex h-full flex-col">
         <div className="flex items-center gap-3 rounded-2xl bg-slate-950 p-4 text-white">
           <Logo size="small" priority className="!h-7 !w-14" />
@@ -42,7 +42,7 @@ export function Sidebar() {
           </p>
         </div>
 
-        <nav className="mt-4 grid gap-2">
+        <nav className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-1">
           {navItems.map((item) => {
             const active =
               pathname === item.href ||
@@ -54,11 +54,10 @@ export function Sidebar() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`rounded-2xl px-4 py-3 text-sm font-bold transition ${
-                  active
+                className={`rounded-2xl px-4 py-3 text-sm font-bold transition ${active
                     ? "bg-accent-strong text-slate-950 shadow-[0_14px_30px_rgba(246,200,0,0.25)]"
                     : "text-muted-strong hover:bg-yellow-50 hover:text-foreground"
-                }`}
+                  }`}
               >
                 {item.label}
               </Link>
@@ -66,7 +65,7 @@ export function Sidebar() {
           })}
         </nav>
 
-        <div className="mt-auto grid gap-3 pt-6">
+        <div className="mt-auto grid gap-3 pt-6 sm:grid-cols-2 lg:grid-cols-1">
           <Button
             href="/"
             variant="secondary"

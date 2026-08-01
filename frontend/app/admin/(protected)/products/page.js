@@ -163,16 +163,16 @@ export default function AdminProductsPage() {
     <div className="space-y-6">
       {/* Header Card */}
       <Card className="p-6 md:p-8">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h2 className="text-2xl font-bold">Produits</h2>
 
-            <p className="text-muted mt-1">
+            <p className="mt-1 text-muted">
               Gérez votre inventaire de produits
             </p>
           </div>
 
-          <Button href="/admin/products/new">
+          <Button href="/admin/products/new" className="w-full sm:w-auto">
             Ajouter un produit
           </Button>
         </div>
@@ -180,12 +180,12 @@ export default function AdminProductsPage() {
 
       {/* Search and Filter Bar */}
       <Card className="p-4 md:p-6">
-        <div className="rounded-[1.75rem] border border-line bg-white/90 p-2 shadow-[0_24px_70px_rgba(22,22,22,0.12)] backdrop-blur flex items-center gap-2">
+        <div className="flex flex-col gap-2 rounded-[1.75rem] border border-line bg-white/90 p-2 shadow-[0_24px_70px_rgba(22,22,22,0.12)] backdrop-blur sm:flex-row sm:items-center">
           {/* Category Dropdown */}
           <select
             value={selectedCategory}
             onChange={(event) => setSelectedCategory(event.target.value)}
-            className="px-3 py-2 min-h-12 rounded-[1.25rem] border border-line bg-white text-foreground outline-none focus:border-accent-strong text-xs sm:text-sm font-semibold"
+            className="w-full min-h-12 rounded-[1.25rem] border border-line bg-white px-3 py-2 text-xs font-semibold text-foreground outline-none focus:border-accent-strong sm:w-auto sm:text-sm"
           >
             <option value="">Catégorie</option>
 
@@ -202,20 +202,20 @@ export default function AdminProductsPage() {
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Rechercher des produits..."
-            className="min-h-12 flex-1 rounded-[1.25rem] border-0 bg-transparent px-4 text-sm font-semibold text-foreground outline-none placeholder:text-muted"
+            className="min-h-12 w-full flex-1 rounded-[1.25rem] border-0 bg-transparent px-4 text-sm font-semibold text-foreground outline-none placeholder:text-muted"
           />
 
           {/* Filter Icon Button */}
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className="px-4 py-2 min-h-12 rounded-[1.25rem] border border-line hover:bg-white/50 text-foreground font-semibold transition-colors"
+            className="min-h-12 rounded-[1.25rem] border border-line px-4 py-2 font-semibold text-foreground transition-colors hover:bg-white/50"
             title={showFilters ? "Masquer les filtres" : "Afficher les filtres"}
           >
             ⚙️
           </button>
 
           {/* Search Button */}
-          <button className="mr-2 px-6 py-2 min-h-12 rounded-[1.25rem] bg-accent-strong hover:bg-accent-strong/90 text-white font-semibold transition-colors text-sm">
+          <button className="min-h-12 rounded-[1.25rem] bg-accent-strong px-6 py-2 text-sm font-semibold text-white transition-colors hover:bg-accent-strong/90">
             Rechercher
           </button>
         </div>
@@ -227,7 +227,7 @@ export default function AdminProductsPage() {
               Fourchette de prix
             </p>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid gap-4 sm:grid-cols-2">
               <div>
                 <label
                   htmlFor="min-price-admin"
@@ -429,12 +429,12 @@ export default function AdminProductsPage() {
                     </td>
 
                     <td className="px-5 py-4">
-                      <div className="flex gap-2">
+                      <div className="flex flex-col gap-2 sm:flex-row">
                         <Button
                           href={`/admin/products/${product.id}/edit`}
                           variant="secondary"
                           size="sm"
-                          className="text-xs"
+                          className="w-full text-xs sm:w-auto"
                         >
                           Modifier
                         </Button>
@@ -444,7 +444,7 @@ export default function AdminProductsPage() {
                           disabled={deletingId === product.id}
                           variant="danger"
                           size="sm"
-                          className="text-xs"
+                          className="w-full text-xs sm:w-auto"
                         >
                           {deletingId === product.id
                             ? "..."

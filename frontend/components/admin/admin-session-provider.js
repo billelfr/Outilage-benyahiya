@@ -2,7 +2,12 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { fetchAdminMe, getErrorMessage } from "@/lib/adminApi";
-import { clearAdminToken, getAdminToken } from "@/lib/auth";
+import {
+  clearAdminToken,
+  getAdminToken,
+  getDevOnlyAdminUser,
+  isDevOnlyAuthBypassEnabled,
+} from "@/lib/auth";
 import { normalizeAdminUser } from "@/lib/normalize";
 
 const AdminSessionContext = createContext(null);
@@ -14,6 +19,11 @@ export function AdminSessionProvider({ children }) {
 
   function logout() {
     clearAdminToken();
+    if (isDevOnlyAuthBypassEnabled()) { // DEV ONLY
+      setAdmin(getDevOnlyAdminUser()); // DEV ONLY
+      setError(""); // DEV ONLY
+      return; // DEV ONLY
+    }
     setAdmin(null);
   }
 
@@ -21,6 +31,15 @@ export function AdminSessionProvider({ children }) {
     let active = true;
 
     Promise.resolve().then(async () => {
+      if (isDevOnlyAuthBypassEnabled()) { // DEV ONLY
+        if (active) {
+          setAdmin(normalizeAdminUser(getDevOnlyAdminUser())); // DEV ONLY
+          setError(""); // DEV ONLY
+          setLoading(false); // DEV ONLY
+        }
+        return; // DEV ONLY
+      }
+
       const token = getAdminToken();
 
       if (!token) {
@@ -67,6 +86,13 @@ export function AdminSessionProvider({ children }) {
   }, []);
 
   async function refreshSession() {
+    if (isDevOnlyAuthBypassEnabled()) { // DEV ONLY
+      setAdmin(normalizeAdminUser(getDevOnlyAdminUser())); // DEV ONLY
+      setError(""); // DEV ONLY
+      setLoading(false); // DEV ONLY
+      return; // DEV ONLY
+    }
+
     const token = getAdminToken();
 
     if (!token) {

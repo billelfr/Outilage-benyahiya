@@ -92,17 +92,16 @@ export default function AdminOrdersPage() {
           title="Suivre l'avancement des commandes"
           description="Cliquez sur une ligne de commande pour afficher les instructions de livraison et le détail des articles."
         />
-        <div className="mt-6 flex gap-2 overflow-x-auto pb-1">
+        <div className="mt-6 flex flex-wrap gap-2 pb-1">
           {statuses.map((status) => (
             <button
               key={status}
               type="button"
               onClick={() => setStatusFilter(status)}
-              className={`rounded-2xl px-4 py-2 text-sm font-bold transition ${
-                statusFilter === status
+              className={`whitespace-nowrap rounded-2xl px-4 py-2 text-sm font-bold transition ${statusFilter === status
                   ? "bg-slate-950 text-white"
                   : "border border-line bg-white/75 text-muted-strong hover:bg-white"
-              }`}
+                }`}
             >
               {statusLabels[status]}
             </button>
@@ -124,10 +123,10 @@ export default function AdminOrdersPage() {
                 <tr>
                   <th className="px-2 py-3">N° commande</th>
                   <th className="px-2 py-3">Client</th>
-                  <th className="px-2 py-3">Téléphone</th>
-                  <th className="px-2 py-3">Articles</th>
+                  <th className="hidden px-2 py-3 md:table-cell">Téléphone</th>
+                  <th className="hidden px-2 py-3 md:table-cell">Articles</th>
                   <th className="px-2 py-3">Total</th>
-                  <th className="px-2 py-3">Date</th>
+                  <th className="hidden px-2 py-3 md:table-cell">Date</th>
                   <th className="px-2 py-3">Statut</th>
                 </tr>
               </thead>
@@ -157,17 +156,17 @@ export default function AdminOrdersPage() {
                           </p>
                         </td>
 
-                        <td className="px-2 py-3 break-all">
+                        <td className="hidden px-2 py-3 break-all md:table-cell">
                           {order.customerPhone || "Aucun téléphone"}
                         </td>
 
-                        <td className="px-2 py-3 text-center">{order.items.length}</td>
+                        <td className="hidden px-2 py-3 text-center md:table-cell">{order.items.length}</td>
 
                         <td className="px-2 py-3 font-bold whitespace-nowrap">
                           {formatCurrency(order.total)}
                         </td>
 
-                        <td className="px-2 py-3 break-words text-xs">
+                        <td className="hidden px-2 py-3 break-words text-xs md:table-cell">
                           {formatDate(order.createdAt)}
                         </td>
 

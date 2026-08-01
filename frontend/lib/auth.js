@@ -1,6 +1,19 @@
 export const ADMIN_TOKEN_STORAGE_KEY = "atelier-market-admin-token";
 export const ADMIN_TOKEN_COOKIE = "atelier_market_admin_token";
 
+export function isDevOnlyAuthBypassEnabled() {
+  return process.env.NODE_ENV === "development"; // DEV ONLY
+}
+
+export function getDevOnlyAdminUser() {
+  return {
+    id: "dev-admin-001",
+    name: "Developer Admin",
+    email: "admin@dev.local",
+    role: "admin",
+  }; // DEV ONLY
+}
+
 export function getAdminToken() {
   if (typeof window === "undefined") {
     return null;

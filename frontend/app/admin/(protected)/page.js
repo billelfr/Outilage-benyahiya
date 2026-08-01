@@ -91,11 +91,11 @@ export default function AdminDashboardPage() {
           description="Surveillez le catalogue, le volume des commandes et les revenus depuis une interface claire."
           action={
             <>
-              <Button href="/admin/products/new">
+              <Button href="/admin/products/new" className="w-full sm:w-auto">
                 Ajouter un produit
               </Button>
 
-              <Button href="/admin/orders" variant="secondary">
+              <Button href="/admin/orders" variant="secondary" className="w-full sm:w-auto">
                 Voir les commandes
               </Button>
             </>
@@ -109,7 +109,7 @@ export default function AdminDashboardPage() {
 
       {stats ? (
         <>
-          <section className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+          <section className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
             {[
               ["Produits", stats.products],
               ["Commandes", stats.orders],
@@ -132,8 +132,8 @@ export default function AdminDashboardPage() {
           </section>
 
           <Card className="overflow-hidden">
-            <div className="flex items-center justify-between gap-4">
-              <div className="p-6 pb-0 md:p-8 md:pb-0">
+            <div className="flex flex-col gap-3 p-6 pb-0 md:flex-row md:items-center md:justify-between md:p-8 md:pb-0">
+              <div>
                 <p className="text-xs font-bold uppercase tracking-[0.22em] text-accent-strong">
                   Commandes récentes
                 </p>
@@ -145,7 +145,7 @@ export default function AdminDashboardPage() {
 
               <Link
                 href="/admin/orders"
-                className="mr-6 mt-6 text-sm font-bold text-accent-strong md:mr-8 md:mt-8"
+                className="text-sm font-bold text-accent-strong md:mr-8"
               >
                 Voir toutes les commandes
               </Link>

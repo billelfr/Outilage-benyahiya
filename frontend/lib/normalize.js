@@ -85,6 +85,7 @@ export function normalizeAdminUser(admin = {}) {
     id: getEntityId(admin),
     name: admin.name || admin.fullName || admin.username || "Admin",
     email: admin.email || "",
+    role: admin.role || "admin", // DEV ONLY
     raw: admin,
   };
 }

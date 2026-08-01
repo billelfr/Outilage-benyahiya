@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { LoadingState } from "@/components/loading-state";
 import { useAdminSession } from "@/components/admin/admin-session-provider";
+import { isDevOnlyAuthBypassEnabled } from "@/lib/auth";
 
 export function AdminAuthGuard({ children }) {
   const { admin, loading } = useAdminSession();
@@ -12,6 +13,10 @@ export function AdminAuthGuard({ children }) {
   const pathname = usePathname();
 
   useEffect(() => {
+    if (isDevOnlyAuthBypassEnabled()) { // DEV ONLY
+      return; // DEV ONLY
+    }
+
     if (!loading && !admin) {
       router.replace(
         `/admin/login?next=${encodeURIComponent(
