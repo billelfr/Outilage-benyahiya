@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 export function CartLineItem({ item, onQuantityChange, onRemove }) {
   return (
     <div className="flex flex-col gap-4 rounded-2xl border border-line bg-white/85 p-4 shadow-sm md:flex-row md:items-center md:justify-between">
-      <div className="flex items-center gap-4">
+      <div className="flex items-start gap-4">
         <div className="relative h-20 w-20 overflow-hidden rounded-2xl bg-slate-100">
           <Image
             src={
@@ -30,8 +30,8 @@ export function CartLineItem({ item, onQuantityChange, onRemove }) {
         </div>
       </div>
 
-      <div className="flex items-center justify-between gap-3 md:justify-end">
-        <label className="flex items-center gap-3 rounded-2xl border border-line bg-card px-3 py-2 text-sm">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between md:justify-end">
+        <label className="flex items-center justify-between gap-3 rounded-2xl border border-line bg-card px-3 py-2 text-sm sm:justify-start">
           <span>Qté</span>
 
           <input
@@ -45,7 +45,7 @@ export function CartLineItem({ item, onQuantityChange, onRemove }) {
           />
         </label>
 
-        <p className="min-w-24 text-right font-semibold">
+        <p className="text-right font-semibold sm:min-w-24">
           {formatCurrency(item.price * item.quantity)}
         </p>
 
@@ -53,6 +53,7 @@ export function CartLineItem({ item, onQuantityChange, onRemove }) {
           onClick={() => onRemove(item.id)}
           variant="danger"
           size="sm"
+          className="w-full sm:w-auto"
         >
           Supprimer
         </Button>

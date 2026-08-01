@@ -130,15 +130,15 @@ export default function CartPage() {
   }
 
   return (
-    <div className="page-shell grid gap-6 py-8 md:py-12 lg:grid-cols-[1fr_380px]">
-      <Card className="p-6 md:p-8">
+    <div className="page-shell grid gap-6 py-8 md:py-12 lg:grid-cols-[minmax(0,1fr)_380px]">
+      <Card className="p-4 sm:p-6 md:p-8">
         <div className="border-b border-line pb-6">
           <SectionHeader
             eyebrow="Panier"
             title="Vérifiez vos sélections"
             description="Ajustez les quantités, renseignez vos coordonnées de livraison et passez la commande sans saisir de données de carte bancaire."
             action={
-              <Button onClick={clearCart} variant="danger" size="sm">
+              <Button onClick={clearCart} variant="danger" size="sm" className="w-full sm:w-auto">
                 Vider le panier
               </Button>
             }
@@ -157,7 +157,7 @@ export default function CartPage() {
         </div>
       </Card>
 
-      <Card className="h-fit p-6 md:p-8">
+      <Card className="h-fit p-4 sm:p-6 md:p-8 lg:sticky lg:top-6">
         <p className="text-xs font-bold uppercase tracking-[0.22em] text-accent-strong">
           Passer la commande
         </p>
